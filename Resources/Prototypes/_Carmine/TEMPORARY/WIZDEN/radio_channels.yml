@@ -1,0 +1,19 @@
+---
+- type: radioChannel
+  id: Common
+  name: chat-radio-common
+  keycode: ";"
+  frequency: 1459
+  color: "#32cd32"
+  # long range so it functions without a telecom server
+  longRange: true
+  localizedRange: 2500.0
+
+- type: radioChannel
+  id: Handheld
+  name: chat-radio-handheld
+  frequency: 1330
+  color: "#d39f01"
+  # long range since otherwise it'd defeat the point of a handheld radio independent of telecomms
+  longRange: true
+  showFrequency: true # Frontier

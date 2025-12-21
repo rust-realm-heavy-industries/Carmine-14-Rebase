@@ -1,0 +1,11 @@
+---
+- type: entity
+  parent: OrganAnimalStomach
+  id: OrganAnimalRuminantStomach
+  name: ruminant stomach
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      stomach:
+        maxVol: 80

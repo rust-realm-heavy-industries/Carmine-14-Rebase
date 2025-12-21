@@ -1,0 +1,5 @@
+---
+- type: sinkPort
+  id: OperatingTableReceiver
+  name: signal-port-name-operating-table
+  description: signal-port-description-operating-table-receiver

@@ -1,0 +1,12 @@
+---
+- type: soundCollection
+  id: TrollBeeping
+  files:
+  - /Audio/Effects/countdown.ogg
+
+- type: soundCollection
+  id: TrollEsword
+  files:
+  - /Audio/Weapons/ebladeoff.ogg
+  - /Audio/Weapons/ebladeon.ogg
+  - /Audio/Weapons/eblade1.ogg

@@ -1,0 +1,14 @@
+---
+- type: body
+  id: Squackroach
+  name: "squackroach"
+  root: torso
+  slots:
+    torso:
+      part: TorsoAnimal
+      organs:
+        lungs: OrganAnimalLungs
+        stomach: OrganAnimalStomach
+        liver: OrganAnimalLiver
+        heart: OrganAnimalHeart
+        kidneys: OrganAnimalKidneys

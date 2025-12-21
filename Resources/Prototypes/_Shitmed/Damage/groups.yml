@@ -1,0 +1,7 @@
+---
+- type: damageGroup
+  id: OrganFailure
+  name: damage-group-organ-failure
+  damageTypes:
+    - Decay
+    - Trauma

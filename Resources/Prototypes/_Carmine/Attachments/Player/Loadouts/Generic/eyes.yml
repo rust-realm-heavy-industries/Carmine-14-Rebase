@@ -1,0 +1,11 @@
+# ---
+# - type: loadout
+#   id: CarmineBaseLoadoutEyesGlasses
+#   category: Eyes
+#   cost: 0
+#   customColorTint: true
+#   items:
+#     - ClothingEyesGlasses
+#   requirements:
+#     - !type:CharacterItemGroupRequirement
+#       group: LoadoutEyes

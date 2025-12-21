@@ -1,0 +1,109 @@
+---
+# Base
+
+- type: entity
+  parent: BaseGameRule
+  id: BaseVariationPass
+  abstract: true
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationVariationPassRule
+
+# Actual rules
+
+- type: entity
+  parent: BaseVariationPass
+  id: BasicPoweredLightVariationPass
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: PoweredLightVariationPass
+
+- type: entity
+  parent: BaseVariationPass
+  id: BasicTrashVariationPass
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: EntitySpawnVariationPass
+    tilesPerEntityAverage: 35
+    tilesPerEntityStdDev: 4
+    entities:
+    - id: RandomSpawner
+
+- type: weightedRandomFillSolution
+  id: RandomFillTrashPuddle
+  fills:
+  - quantity: 80
+    weight: 5
+    reagents:
+    - Vomit
+    - InsectBlood
+    - WeldingFuel
+    - Mold
+  - quantity: 55
+    weight: 4
+    reagents:
+    - PlantBGone
+    - Potassium # :trollface:
+    - VentCrud
+    - Carbon
+    - Hydrogen
+    - Fat
+    - SpaceLube
+    - SpaceGlue
+    - Sulfur
+    - Acetone
+    - Bleach
+  - quantity: 40
+    weight: 3
+    reagents:
+    - Blood
+    - CopperBlood
+  - quantity: 25
+    weight: 1
+    reagents:
+    - Omnizine
+    - Desoxyephedrine
+    - Napalm
+    - Radium
+    - Gold
+    - Silver
+    - Sodium
+    - JuiceThatMakesYouWeh
+
+- type: weightedRandomFillSolution
+  id: RandomFillTrashPuddleBloodbath
+  fills:
+  - quantity: 80
+    weight: 1
+    reagents:
+    - Blood
+
+- type: entity
+  parent: BaseVariationPass
+  id: BasicPuddleMessVariationPass
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: PuddleMessVariationPass
+    randomPuddleSolutionFill: RandomFillTrashPuddle
+
+- type: entity
+  parent: BaseVariationPass
+  id: BloodbathPuddleMessVariationPass
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: PuddleMessVariationPass
+    tilesPerSpillAverage: 150
+    tilesPerSpillStdDev: 10
+    randomPuddleSolutionFill: RandomFillTrashPuddleBloodbath
+
+- type: entity
+  parent: BaseVariationPass
+  id: CutWireVariationPass
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: CutWireVariationPass
+    wireCutChance: 0.01
+    maxWiresCut: 20
+    blacklist:
+      components:
+      - ParticleAcceleratorControlBox
