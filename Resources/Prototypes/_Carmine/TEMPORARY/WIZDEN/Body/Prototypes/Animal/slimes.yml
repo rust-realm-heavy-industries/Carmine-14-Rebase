@@ -1,5 +1,4 @@
----
-- type: body
+﻿- type: body
   id: Slimes
   name: "slimes"
   root: torso

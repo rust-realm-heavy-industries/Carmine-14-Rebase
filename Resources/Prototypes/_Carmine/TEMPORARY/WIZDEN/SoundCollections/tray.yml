@@ -1,5 +1,4 @@
----
-- type: soundCollection
+﻿- type: soundCollection
   id: TrayHit
   files:
   - /Audio/Items/trayhit1.ogg

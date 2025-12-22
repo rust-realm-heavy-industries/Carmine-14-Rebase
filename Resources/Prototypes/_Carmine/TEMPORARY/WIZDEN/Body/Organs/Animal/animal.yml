@@ -1,24 +1,19 @@
----
 - type: entity
-  parent: BaseItem
   id: BaseAnimalOrganUnGibbable
+  parent: BaseItem
   abstract: true
   components:
   - type: Organ
-  - type: Food
+  - type: Edible
   - type: Sprite
     sprite: Mobs/Species/Human/organs.rsi
   - type: StaticPrice
     price: 50
-  - type: Extractable
-  - type: Produce
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 15
+        maxVol: 5
         reagents:
-        - ReagentId: Nutriment
-          Quantity: 10
         - ReagentId: UncookedAnimalProteins
           Quantity: 5
   - type: FlavorProfile
@@ -29,16 +24,16 @@
       - Meat
 
 - type: entity
-  parent: BaseAnimalOrganUnGibbable
   id: BaseAnimalOrgan
+  parent: BaseAnimalOrganUnGibbable
   abstract: true
   components:
   - type: Gibbable
 
 - type: entity
-  parent: BaseAnimalOrgan
   id: OrganAnimalLungs
-  name: lungs
+  parent: BaseAnimalOrgan
+  name: animal lungs
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
@@ -46,7 +41,6 @@
     - state: lung-l
     - state: lung-r
   - type: Organ
-    slotId: lungs # Shitmed
   - type: Lung
   - type: Metabolizer
     removeEmpty: true
@@ -62,32 +56,30 @@
         maxVol: 100.0
         canReact: false
       food:
-        maxVol: 15
+        maxVol: 5
         reagents:
-        - ReagentId: Nutriment
-          Quantity: 10
         - ReagentId: UncookedAnimalProteins
           Quantity: 5
+  - type: Item
+    size: Small
+    heldPrefix: lungs
 
 - type: entity
-  parent: BaseAnimalOrgan
   id: OrganAnimalStomach
-  name: stomach
+  parent: BaseAnimalOrgan
+  name: animal stomach
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
     state: stomach
   - type: Organ
-    slotId: stomach # Shitmed
   - type: SolutionContainerManager
     solutions:
       stomach:
         maxVol: 40
       food:
-        maxVol: 15
+        maxVol: 5
         reagents:
-        - ReagentId: Nutriment
-          Quantity: 10
         - ReagentId: UncookedAnimalProteins
           Quantity: 5
   - type: Stomach
@@ -97,46 +89,55 @@
     groups:
     - id: Food
     - id: Drink
+  - type: Item
+    size: Small
+    heldPrefix: stomach
 
 - type: entity
-  parent: OrganAnimalStomach
   id: OrganMouseStomach
-  name: stomach
+  parent: OrganAnimalStomach
   categories: [ HideSpawnMenu ]
   components:
   - type: SolutionContainerManager
     solutions:
       stomach:
         maxVol: 30
+      food:
+        maxVol: 5
+        reagents:
+        - ReagentId: UncookedAnimalProteins
+          Quantity: 5
+  - type: Item
+    size: Small
+    heldPrefix: stomach
 
 - type: entity
-  parent: BaseAnimalOrgan
   id: OrganAnimalLiver
-  name: liver
+  parent: BaseAnimalOrgan
+  name: animal liver
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
     state: liver
   - type: Organ
-    slotId: liver # Shitmed
   - type: Metabolizer
     maxReagents: 1
     metabolizerTypes: [ Animal ]
     groups:
     - id: Alcohol
-      rateModifier: 0.1
-  - type: Liver # Shitmed
+  - type: Item
+    size: Small
+    heldPrefix: liver
 
 - type: entity
-  parent: BaseAnimalOrgan
   id: OrganAnimalHeart
-  name: heart
+  parent: BaseAnimalOrgan
+  name: animal heart
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
     state: heart-on
   - type: Organ
-    slotId: heart # Shitmed
   - type: Metabolizer
     maxReagents: 2
     metabolizerTypes: [ Animal ]
@@ -144,13 +145,14 @@
     - id: Medicine
     - id: Poison
     - id: Narcotic
-  - type: Heart # Shitmed
-
+  - type: Item
+    size: Small
+    heldPrefix: heart
 
 - type: entity
-  parent: BaseAnimalOrgan
   id: OrganAnimalKidneys
-  name: kidneys
+  parent: BaseAnimalOrgan
+  name: animal kidneys
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
@@ -158,8 +160,10 @@
     - state: kidney-l
     - state: kidney-r
   - type: Organ
-    slotId: kidneys # Shitmed
   - type: Metabolizer
     maxReagents: 5
     metabolizerTypes: [ Animal ]
     removeEmpty: true
+  - type: Item
+    size: Small
+    heldPrefix: kidneys

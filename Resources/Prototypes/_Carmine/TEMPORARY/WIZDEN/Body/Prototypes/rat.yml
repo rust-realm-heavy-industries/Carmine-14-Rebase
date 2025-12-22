@@ -1,5 +1,4 @@
----
-- type: body
+﻿- type: body
   id: Rat
   name: "animal"
   root: torso

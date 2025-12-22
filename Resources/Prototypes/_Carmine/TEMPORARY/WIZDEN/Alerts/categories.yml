@@ -1,4 +1,3 @@
----
 - type: alertCategory
   id: Pressure
 
@@ -33,4 +32,4 @@
   id: Toxins
 
 - type: alertCategory
-  id: Mood
+  id: Battery

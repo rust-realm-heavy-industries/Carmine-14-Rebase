@@ -1,11 +1,10 @@
----
 # Just copypasta of some human basic body parts for interaction,
 # only differences for now is that limbs work in pairs,
 # they are unextractable and can't be spawned (no surgery on Animals!?).
 
 - type: entity
-  parent: BaseItem
   id: PartAnimal
+  parent: BaseItem
   name: "animal body part"
   abstract: true
   components:
@@ -13,7 +12,7 @@
   - type: Sprite
     sprite: Mobs/Species/Reptilian/parts.rsi
   - type: Damageable
-    damageContainer: OrganicPart # Shitmed
+    damageContainer: Biological
   - type: BodyPart
   - type: ContainerContainer
     containers:
@@ -34,9 +33,9 @@
         Quantity: 10
 
 - type: entity
-  parent: PartAnimal
   id: HandsAnimal
   name: animal hands
+  parent: PartAnimal
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
@@ -45,13 +44,12 @@
     - state: r_hand
   - type: BodyPart
     partType: Hand
-    #symmetry: Left
-    slotId: hands # Shitmed
+    symmetry: Left
 
 - type: entity
-  parent: PartAnimal
   id: LegsAnimal
   name: animal legs
+  parent: PartAnimal
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
@@ -60,13 +58,12 @@
     - state: r_leg
   - type: BodyPart
     partType: Leg
-    slotId: legs # Shitmed
   - type: MovementBodyPart
 
 - type: entity
-  parent: PartAnimal
   id: FeetAnimal
   name: animal feet
+  parent: PartAnimal
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
@@ -75,12 +72,11 @@
     - state: l_foot
   - type: BodyPart
     partType: Foot
-    slotId: feet # Shitmed
 
 - type: entity
-  parent: PartAnimal
   id: TorsoAnimal
   name: animal torso
+  parent: PartAnimal
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
@@ -97,3 +93,29 @@
         Quantity: 10
       - ReagentId: Blood
         Quantity: 20
+
+- type: entity
+  parent: PartAnimal
+  id: LeftHandSmartCorgi
+  name: corgi hand
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    layers:
+    - state: l_hand
+  - type: BodyPart
+    partType: Hand
+    symmetry: Left
+
+- type: entity
+  parent: PartAnimal
+  id: RightHandSmartCorgi
+  name: corgi hand
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    layers:
+    - state: r_hand
+  - type: BodyPart
+    partType: Hand
+    symmetry: Right

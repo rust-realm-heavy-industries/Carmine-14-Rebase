@@ -1,5 +1,4 @@
----
-- type: soundCollection
+﻿- type: soundCollection
   id: FenceRattle
   files:
   - /Audio/Effects/fence_rattle1.ogg

@@ -1,4 +1,3 @@
----
 - type: tool
   id: Anchoring
   name: tool-quality-anchoring-name
@@ -70,8 +69,8 @@
   icon: { sprite: Objects/Tools/rolling_pin.rsi, state: icon }
 
 - type: tool
-  id: Axing
-  name: tool-quality-axing-name
-  toolName: tool-quality-axing-tool-name
-  spawn: FireAxe
-  icon: { sprite: Objects/Weapons/Melee/fireaxe.rsi, state: icon }
+  id: Brushing
+  name: tool-quality-brushing-name
+  toolName: tool-quality-brushing-tool-name
+  spawn: WireBrush
+  icon: { sprite: Objects/Specific/Janitorial/wirebrush.rsi, state: icon }

@@ -1,4 +1,3 @@
----
 # Items that can be held completely in one's hand.
 - type: itemSize
   id: Tiny
@@ -39,7 +38,7 @@
   defaultShape:
   - 0,0,3,3
 
-# Picture big chungus
+# Picture furry gf
 - type: itemSize
   id: Ginormous
   weight: 32

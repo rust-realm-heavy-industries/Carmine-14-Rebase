@@ -1,5 +1,4 @@
----
-- type: palette
+﻿- type: palette
   id: Departmental
   name: Departmental
   colors:
@@ -10,8 +9,7 @@
     security: "#DE3A3A96"
     bar: "#79150096"
     science: "#D381C996"
-    logistics: "#A4610696" # DeltaV - Logistics Department replacing Cargo
-    justice: "#6b2833DD" #DeltaV - Added Justice Department
+    cargo: "#A4610696"
     janitor: "#8c347f96"
     chemistry: "#fa750096"
     virology: "#43990996"

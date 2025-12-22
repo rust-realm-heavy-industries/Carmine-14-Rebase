@@ -1,33 +1,91 @@
----
-# Base
+﻿# Base
 
 - type: entity
-  parent: BaseGameRule
   id: BaseVariationPass
+  parent: BaseGameRule
   abstract: true
-  categories: [ HideSpawnMenu ]
   components:
   - type: StationVariationPassRule
 
 # Actual rules
 
 - type: entity
-  parent: BaseVariationPass
   id: BasicPoweredLightVariationPass
-  categories: [ HideSpawnMenu ]
+  parent: BaseVariationPass
   components:
   - type: PoweredLightVariationPass
 
 - type: entity
+  id: SolidWallRustingVariationPass
   parent: BaseVariationPass
+  components:
+  - type: WallReplaceVariationPass
+  - type: EntityReplaceVariationPass
+    entitiesPerReplacementAverage: 50
+    entitiesPerReplacementStdDev: 10
+    replacements:
+    - id: WallSolidRust
+
+- type: entity
+  id: ReinforcedWallRustingVariationPass
+  parent: BaseVariationPass
+  components:
+  - type: ReinforcedWallReplaceVariationPass
+  - type: EntityReplaceVariationPass
+    entitiesPerReplacementAverage: 50
+    entitiesPerReplacementStdDev: 10
+    replacements:
+    - id: WallReinforcedRust
+
+- type: entity
   id: BasicTrashVariationPass
-  categories: [ HideSpawnMenu ]
+  parent: BaseVariationPass
   components:
   - type: EntitySpawnVariationPass
     tilesPerEntityAverage: 35
     tilesPerEntityStdDev: 4
     entities:
     - id: RandomSpawner
+
+- type: entity
+  id: BasicDecalDirtVariationPass
+  parent: BaseVariationPass
+  components:
+  - type: EntitySpawnVariationPass
+    tilesPerEntityAverage: 80
+    tilesPerEntityStdDev: 5
+    entities:
+    - id: DecalSpawnerDirtWide
+
+- type: entity
+  id: BasicDecalGraffitiVariationPass
+  parent: BaseVariationPass
+  components:
+  - type: EntitySpawnVariationPass
+    tilesPerEntityAverage: 120
+    tilesPerEntityStdDev: 5
+    entities:
+    - id: DecalSpawnerGraffiti
+
+- type: entity
+  id: BasicDecalBurnsVariationPass
+  parent: BaseVariationPass
+  components:
+  - type: EntitySpawnVariationPass
+    tilesPerEntityAverage: 120
+    tilesPerEntityStdDev: 10
+    entities:
+    - id: DecalSpawnerBurns
+
+- type: entity
+  id: BasicDecalDirtMonospaceVariationPass
+  parent: BaseVariationPass
+  components:
+  - type: EntitySpawnVariationPass
+    tilesPerEntityAverage: 80
+    tilesPerEntityStdDev: 10
+    entities:
+    - id: DecalSpawnerDirtMonospace
 
 - type: weightedRandomFillSolution
   id: RandomFillTrashPuddle
@@ -48,7 +106,6 @@
     - Carbon
     - Hydrogen
     - Fat
-    - SpaceLube
     - SpaceGlue
     - Sulfur
     - Acetone
@@ -58,6 +115,7 @@
     reagents:
     - Blood
     - CopperBlood
+    - Slime
   - quantity: 25
     weight: 1
     reagents:
@@ -79,17 +137,15 @@
     - Blood
 
 - type: entity
-  parent: BaseVariationPass
   id: BasicPuddleMessVariationPass
-  categories: [ HideSpawnMenu ]
+  parent: BaseVariationPass
   components:
   - type: PuddleMessVariationPass
     randomPuddleSolutionFill: RandomFillTrashPuddle
 
 - type: entity
-  parent: BaseVariationPass
   id: BloodbathPuddleMessVariationPass
-  categories: [ HideSpawnMenu ]
+  parent: BaseVariationPass
   components:
   - type: PuddleMessVariationPass
     tilesPerSpillAverage: 150
@@ -97,9 +153,8 @@
     randomPuddleSolutionFill: RandomFillTrashPuddleBloodbath
 
 - type: entity
-  parent: BaseVariationPass
   id: CutWireVariationPass
-  categories: [ HideSpawnMenu ]
+  parent: BaseVariationPass
   components:
   - type: CutWireVariationPass
     wireCutChance: 0.01
@@ -107,3 +162,25 @@
     blacklist:
       components:
       - ParticleAcceleratorControlBox
+
+- type: entity
+  id: SolarPanelDamageVariationPass
+  parent: BaseVariationPass
+  components:
+  - type: SolarPanelReplaceVariationPass
+  - type: EntityReplaceVariationPass
+    entitiesPerReplacementAverage: 30
+    entitiesPerReplacementStdDev: 5
+    replacements:
+    - id: SolarPanelBroken
+
+- type: entity
+  id: SolarPanelEmptyVariationPass
+  parent: BaseVariationPass
+  components:
+  - type: SolarPanelReplaceVariationPass
+  - type: EntityReplaceVariationPass
+    entitiesPerReplacementAverage: 30
+    entitiesPerReplacementStdDev: 5
+    replacements:
+    - id: SolarAssembly

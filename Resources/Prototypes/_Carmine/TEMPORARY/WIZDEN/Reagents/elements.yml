@@ -1,4 +1,3 @@
----
 - type: reagent
   id: Aluminium # We use real words here.
   name: reagent-name-aluminium # -we use real words here.
@@ -63,12 +62,19 @@
       metabolismRate: 0.1
       effects:
       - !type:HealthChange
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type: [ Arachnid ]
+          inverted: true
         damage:
           types:
             Poison: 0.1
     Medicine:
       effects:
       - !type:ModifyBloodLevel
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type: [ Arachnid ]
         amount: 0.4
 
 - type: reagent
@@ -98,7 +104,6 @@
           types:
             Caustic: 0.5
             Poison: 0.5
-
 - type: reagent
   id: Gold
   name: reagent-name-gold
@@ -147,12 +152,19 @@
       metabolismRate: 0.1
       effects:
       - !type:HealthChange
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type: [ Arachnid ]
         damage:
           types:
             Poison: 0.1
     Medicine:
       effects:
       - !type:ModifyBloodLevel
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type: [ Arachnid ]
+          inverted: true
         amount: 0.4
 
 - type: reagent
@@ -199,9 +211,9 @@
         damage:
           types:
             Poison: 1
-      - !type:GenericStatusEffect
-        key: Stutter
-        component: ScrambledAccent
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectScrambled
+        type: Update
 
 - type: reagent
   id: Potassium

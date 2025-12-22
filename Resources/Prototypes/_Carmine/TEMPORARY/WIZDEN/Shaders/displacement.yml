@@ -1,5 +1,4 @@
----
-- type: shader
+﻿- type: shader
   id: DisplacedStencilDraw
   kind: source
   path: "/Textures/Shaders/displacement.swsl"

@@ -1,4 +1,3 @@
----
 - type: soundCollection
   id: MaleSneezes
   files:
@@ -10,7 +9,7 @@
     - /Audio/Voice/Human/female_sneeze_1.ogg
 
 - type: soundCollection
-  id: MaleCoughsDeprecated
+  id: MaleCoughs
   files:
   - /Audio/Voice/Human/male_cough_1.ogg
   - /Audio/Voice/Human/male_cough_2.ogg
@@ -63,3 +62,8 @@
   id: Honks
   files:
   - /Audio/Items/bikehorn.ogg
+
+- type: soundCollection
+  id: Vomit
+  files:
+  - /Audio/Effects/Fluids/splat.ogg

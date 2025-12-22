@@ -1,5 +1,4 @@
----
-- type: noiseChannel
+﻿- type: noiseChannel
   id: Density
   noiseType: Perlin
   fractalLacunarityByPi: 0.666666666

@@ -1,4 +1,3 @@
----
 # Default human metabolism groups.
 - type: metabolismGroup
   id: Poison
@@ -28,3 +27,8 @@
 - type: metabolismGroup
   id: Gas
   name: metabolism-group-gas
+
+# Dummy for the guide
+- type: metabolismGroup
+  id: PlantMetabolisms
+  name: metabolism-group-plant-metabolisms

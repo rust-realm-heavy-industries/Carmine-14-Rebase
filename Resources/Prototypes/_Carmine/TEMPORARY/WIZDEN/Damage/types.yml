@@ -1,4 +1,3 @@
----
 # Damage due to being unable to breathe.
 # Represents not enough oxygen (or equivalent) getting to the blood.
 # Usually healed automatically if entity can breathe
@@ -85,3 +84,11 @@
   name: damage-type-structural
   armorCoefficientPrice: 1
   armorFlatPrice: 1
+
+# Metaphysical damage. Damage represents supernatural injuries that emphasize the fantasy elements in the game
+- type: damageType
+  id: Holy
+  name: damage-type-holy
+  armorCoefficientPrice: 1
+  armorFlatPrice: 1
+

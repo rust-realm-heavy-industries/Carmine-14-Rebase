@@ -1,4 +1,3 @@
----
 # Default Mixing
 # Not actually used in reactions: only meant for guidebook display purposes.
 
@@ -13,15 +12,22 @@
   id: DummyGrind
   verbText: mixing-verb-default-grind
   icon:
-    sprite: Structures/Machines/juicer.rsi
-    state: juicer0
+    sprite: Structures/Machines/grinder.rsi
+    state: grinder_empty
 
 - type: mixingCategory
   id: DummyJuice
   verbText: mixing-verb-default-juice
   icon:
-    sprite: Structures/Machines/juicer.rsi
-    state: juicer0
+    sprite: Structures/Machines/grinder.rsi
+    state: grinder_empty
+
+- type: mixingCategory
+  id: DummyCondense
+  verbText: mixing-verb-default-condense
+  icon:
+    sprite: Structures/Piping/Atmospherics/condenser.rsi
+    state: display
 
 # Alternative Mixing Methods
 

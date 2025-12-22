@@ -1,4 +1,3 @@
----
 # If your species wants to metabolize stuff differently,
 # you'll likely have to tag its metabolizers with something other than Human.
 
@@ -23,6 +22,10 @@
   name: metabolizer-type-slime
 
 - type: metabolizerType
+  id: Vox
+  name: metabolizer-type-vox
+
+- type: metabolizerType
   id: Rat
   name: metabolizer-type-rat
 
@@ -39,13 +42,5 @@
   name: metabolizer-type-moth
 
 - type: metabolizerType
-  id: Vampiric
-  name: metabolizer-type-vampiric
-
-- type: metabolizerType
-  id: LiquorLifeline
-  name: metabolizer-type-liquorlifeline
-
-- type: metabolizerType
-  id: Plasmaman
-  name: metabolizer-type-plasmaman
+  id: Arachnid
+  name: metabolizer-type-arachnid

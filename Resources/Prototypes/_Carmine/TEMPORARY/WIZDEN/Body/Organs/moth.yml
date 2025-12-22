@@ -1,28 +1,21 @@
----
 - type: entity
-  parent: [OrganAnimalStomach, OrganHumanStomach]
   id: OrganMothStomach
-  name: moth stomach
+  parent: [OrganAnimalStomach, OrganHumanStomach]
   categories: [ HideSpawnMenu ]
   components:
   - type: Stomach
     specialDigestible:
       tags:
       - ClothMade
-      - Fruit # DeltaV - Moth can eat fruits.
       - Paper
       - Pill
-      - Vegetable
-      - FoodSnack
   - type: SolutionContainerManager
     solutions:
       stomach:
         maxVol: 50
       food:
-        maxVol: 15
+        maxVol: 5
         reagents:
-        - ReagentId: Nutriment
-          Quantity: 10
         - ReagentId: UncookedAnimalProteins
           Quantity: 5
   - type: Metabolizer
@@ -32,5 +25,3 @@
     groups:
       - id: Food
       - id: Drink
-  - type: Extractable
-  - type: Produce

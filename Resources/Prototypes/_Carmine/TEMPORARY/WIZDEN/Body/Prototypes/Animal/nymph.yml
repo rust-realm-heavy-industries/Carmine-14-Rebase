@@ -1,5 +1,4 @@
----
-- type: body
+﻿- type: body
   id: AnimalNymphBrain
   name: "nymph"
   root: torso

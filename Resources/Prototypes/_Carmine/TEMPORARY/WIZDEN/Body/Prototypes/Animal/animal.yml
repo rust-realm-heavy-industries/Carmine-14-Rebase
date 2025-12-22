@@ -1,5 +1,4 @@
----
-- type: body
+﻿- type: body
   id: Animal
   name: "animal"
   root: torso

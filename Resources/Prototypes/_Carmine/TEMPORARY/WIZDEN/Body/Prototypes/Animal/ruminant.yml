@@ -1,5 +1,4 @@
----
-- type: body
+﻿- type: body
   id: AnimalRuminant
   name: "ruminant"
   root: torso
@@ -11,7 +10,6 @@
       organs:
         lungs: OrganAnimalLungs
         stomach: OrganAnimalRuminantStomach
-        stomach2: OrganAnimalRuminantStomach
         liver: OrganAnimalLiver
         heart: OrganAnimalHeart
         kidneys: OrganAnimalKidneys
