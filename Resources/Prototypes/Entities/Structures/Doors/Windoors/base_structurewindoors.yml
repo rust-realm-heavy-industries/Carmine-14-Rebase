@@ -254,7 +254,7 @@
 #Plasma Windoors
 - type: entity
   id: BasePlasmaWindoor
-  parent: [BaseDeltaPressurePlasmaQuarter, BaseWindoor]
+  parent: [BaseWindoor]
   abstract: true
   components:
   - type: Sprite
@@ -399,7 +399,7 @@
 #Uranium Windoors
 - type: entity
   id: BaseUraniumWindoor
-  parent: [BaseDeltaPressurePlasmaQuarter, BaseWindoor]
+  parent: [BaseWindoor]
   abstract: true
   components:
   - type: Sprite
