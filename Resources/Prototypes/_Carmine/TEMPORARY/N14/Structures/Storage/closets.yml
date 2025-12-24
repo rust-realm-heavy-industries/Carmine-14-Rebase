@@ -1,113 +1,113 @@
----
-# TODO:RESET:TIMEDSTORAGEFILL
+# ---
+# # TODO:RESET:TIMEDSTORAGEFILL
 
-# Metal Closets
-- type: entity
-  parent: ClosetBase
-  id: N14ClosetBase
-  abstract: true
-  components:
-  - type: Sprite
-    sprite: _Nuclear14/Structures/Storage/Closets/closet.rsi
-    layers:
-    - state: closet
-      map: ["enum.StorageVisualLayers.Base"]
-    - state: closet_door
-      map: ["enum.StorageVisualLayers.Door"]
-  - type: Physics
-    bodyType: Static
-  - type: EntityStorageVisuals
-    stateBaseClosed: closet
-    stateDoorOpen: closet_open
-    stateDoorClosed: closet_door
-  - type: Transform
-    anchored: true
-  - type: Anchorable # Makes the anchoring near impossible due to high time requirement
-    delay: 3600
+# # Metal Closets
+# - type: entity
+#   parent: ClosetBase
+#   id: N14ClosetBase
+#   abstract: true
+#   components:
+#   - type: Sprite
+#     sprite: _Nuclear14/Structures/Storage/Closets/closet.rsi
+#     layers:
+#     - state: closet
+#       map: ["enum.StorageVisualLayers.Base"]
+#     - state: closet_door
+#       map: ["enum.StorageVisualLayers.Door"]
+#   - type: Physics
+#     bodyType: Static
+#   - type: EntityStorageVisuals
+#     stateBaseClosed: closet
+#     stateDoorOpen: closet_open
+#     stateDoorClosed: closet_door
+#   - type: Transform
+#     anchored: true
+#   - type: Anchorable # Makes the anchoring near impossible due to high time requirement
+#     delay: 3600
 
-- type: entity
-  parent: N14ClosetBase
-  id: N14ClosetBaseW
-  name: closet
-  description: A basic closet for storing things.
-  components:
-  - type: Weldable
-  - type: Sprite
-    noRot: true
-    netsync: false
-    sprite: _Nuclear14/Structures/Storage/Closets/closet.rsi
-    layers:
-    - state: closet
-      map: ["enum.StorageVisualLayers.Base"]
-    - state: closet_door
-      map: ["enum.StorageVisualLayers.Door"]
-    - state: welded
-      visible: false
-      map: ["enum.WeldableLayers.BaseWelded"]
-  - type: EntityStorageVisuals
-    stateBaseClosed: closet
-    stateDoorOpen: closet_open
-    stateDoorClosed: closet_door
+# - type: entity
+#   parent: N14ClosetBase
+#   id: N14ClosetBaseW
+#   name: closet
+#   description: A basic closet for storing things.
+#   components:
+#   - type: Weldable
+#   - type: Sprite
+#     noRot: true
+#     netsync: false
+#     sprite: _Nuclear14/Structures/Storage/Closets/closet.rsi
+#     layers:
+#     - state: closet
+#       map: ["enum.StorageVisualLayers.Base"]
+#     - state: closet_door
+#       map: ["enum.StorageVisualLayers.Door"]
+#     - state: welded
+#       visible: false
+#       map: ["enum.WeldableLayers.BaseWelded"]
+#   - type: EntityStorageVisuals
+#     stateBaseClosed: closet
+#     stateDoorOpen: closet_open
+#     stateDoorClosed: closet_door
 
 
-- type: entity
-  parent: N14ClosetBaseW
-  id: N14ClosetGrey1
-  components:
-  - type: Sprite
-    sprite: _Nuclear14/Structures/Storage/Closets/closetgrey.rsi
-  - type: Weldable
+# - type: entity
+#   parent: N14ClosetBaseW
+#   id: N14ClosetGrey1
+#   components:
+#   - type: Sprite
+#     sprite: _Nuclear14/Structures/Storage/Closets/closetgrey.rsi
+#   - type: Weldable
 
-- type: entity
-  parent: N14ClosetBaseW
-  id: N14ClosetGrey2
-  components:
-  - type: Sprite
-    sprite: _Nuclear14/Structures/Storage/Closets/closetgrey2.rsi
+# - type: entity
+#   parent: N14ClosetBaseW
+#   id: N14ClosetGrey2
+#   components:
+#   - type: Sprite
+#     sprite: _Nuclear14/Structures/Storage/Closets/closetgrey2.rsi
 
-- type: entity
-  parent: N14ClosetBaseW
-  id: N14ClosetGunCabinet
-  name: gun cabinet
-  description: A secure cabinet for storing guns.
-  components:
-  - type: Sprite
-    sprite: _Nuclear14/Structures/Storage/Closets/guncabinet.rsi
+# - type: entity
+#   parent: N14ClosetBaseW
+#   id: N14ClosetGunCabinet
+#   name: gun cabinet
+#   description: A secure cabinet for storing guns.
+#   components:
+#   - type: Sprite
+#     sprite: _Nuclear14/Structures/Storage/Closets/guncabinet.rsi
 
-- type: entity
-  parent: N14ClosetBaseW
-  id: N14ClosetDouble
-  name: double closet
-  description: A double closet for holding twice the things.
-  components:
-  - type: Sprite
-    sprite: _Nuclear14/Structures/Storage/Closets/doublecloset.rsi
-  - type: Fixtures
-    fixtures:
-      fix1:
-        shape:
-          !type:PhysShapeAabb
-            bounds: "-0.15,-0.45,0.45,0.45"
-        density: 145
-        mask:
-        - MachineMask
-        layer:
-        - MachineLayer
+# - type: entity
+#   parent: N14ClosetBaseW
+#   id: N14ClosetDouble
+#   name: double closet
+#   description: A double closet for holding twice the things.
+#   components:
+#   - type: Sprite
+#     sprite: _Nuclear14/Structures/Storage/Closets/doublecloset.rsi
+#   - type: Fixtures
+#     fixtures:
+#       fix1:
+#         shape:
+#           !type:PhysShapeAabb
+#             bounds: "-0.15,-0.45,0.45,0.45"
+#         density: 145
+#         mask:
+#         - MachineMask
+#         layer:
+#         - MachineLayer
 
-# Wooden Closets
+# # Wooden Closets
 
-- type: entity
-  parent: N14ClosetBaseW
-  id: N14ClosetEnclave
-  suffix: enclave roller
-  components:
-  - type: Sprite
-    sprite: _Nuclear14/Structures/Storage/Closets/closetenclave.rsi
+# - type: entity
+#   parent: N14ClosetBaseW
+#   id: N14ClosetEnclave
+#   suffix: enclave roller
+#   components:
+#   - type: Sprite
+#     sprite: _Nuclear14/Structures/Storage/Closets/closetenclave.rsi
 
-- type: entity
-  parent: N14ClosetBaseW
-  id: N14ClosetGeneric
-  suffix: generic roller
-  components:
-  - type: Sprite
-    sprite: _Nuclear14/Structures/Storage/Closets/closetgeneric.rsi
+# - type: entity
+#   parent: N14ClosetBaseW
+#   id: N14ClosetGeneric
+#   suffix: generic roller
+#   components:
+#   - type: Sprite
+#     sprite: _Nuclear14/Structures/Storage/Closets/closetgeneric.rsi

@@ -649,7 +649,7 @@
     price: 1500
 
 - type: entity
-  parent: Pen # It is just like normal pen, isn't it?
+  #parent: Pen # It is just like normal pen, isn't it?
   id: Hypopen
   suffix: Hypopen
   components:

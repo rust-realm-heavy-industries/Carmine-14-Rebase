@@ -89,7 +89,7 @@
 - type: entity
   abstract: true
   id: BaseGeneratorWallmount
-  parent: [ BaseGenerator, BaseWallmount ]
+  parent: [ BaseGenerator ]
   name: wallmount generator
   description: A high efficiency thermoelectric generator stuffed in a wall cabinet.
   components:
@@ -134,7 +134,7 @@
 # Construction Frames
 
 - type: entity
-  parent: BaseWallmountMetallic
+
   categories: [ HideSpawnMenu ]
   id: BaseGeneratorWallmountFrame
   name: wallmount generator frame

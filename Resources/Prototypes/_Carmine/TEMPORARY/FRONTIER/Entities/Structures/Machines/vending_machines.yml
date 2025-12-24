@@ -1,6 +1,6 @@
 ---
 - type: entity
-  parent: [BaseStructureUnanchorable, VendingMachine]
+  parent: [VendingMachine]
   id: VendingMachineFlatpackVend
   name: FlatpackVend
   description: Essential tech for the space-men on the go

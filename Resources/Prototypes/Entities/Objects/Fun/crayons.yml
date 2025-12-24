@@ -283,7 +283,6 @@
     - Trash
 
 - type: entity
-  parent: BoxCardboard
   id: CrayonBox
   name: crayon box
   description: It's a box of crayons.

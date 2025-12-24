@@ -1,6 +1,6 @@
 ---
 - type: entity
-  parent: [BaseStructureIndestructible, BaseStructureComputerTabletop, ComputerShipyardCrescent]
+  parent: [ BaseStructureComputerTabletop, ComputerShipyardCrescent]
   id: ComputerTabletopShipyard
   components:
   - type: Sprite
@@ -20,7 +20,7 @@
       state: telesci_key
 
 - type: entity
-  parent: [BaseStructureIndestructible, BaseStructureComputerTabletop, BaseMothershipComputer]
+  parent: [ BaseStructureComputerTabletop, BaseMothershipComputer]
   id: BaseMothershipComputerTabletop
   abstract: true
   components:

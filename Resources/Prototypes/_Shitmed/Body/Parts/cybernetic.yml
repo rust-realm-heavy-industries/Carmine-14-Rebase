@@ -1,6 +1,6 @@
 ---
 - type: entity
-  parent: [PartIPC, BaseLeftArm]
+  parent: [ BaseLeftArm]
   id: LeftArmCybernetic
   abstract: true
   components:
@@ -16,7 +16,7 @@
     state: "l_arm-combined"
 
 - type: entity
-  parent: [PartIPC, BaseRightArm]
+  parent: [ BaseRightArm]
   id: RightArmCybernetic
   abstract: true
   components:
@@ -32,7 +32,7 @@
     state: "r_arm-combined"
 
 - type: entity
-  parent: [PartIPC, BaseLeftLeg]
+  parent: [ BaseLeftLeg]
   id: LeftLegCybernetic
   abstract: true
   components:
@@ -48,7 +48,7 @@
     state: "l_leg-combined"
 
 - type: entity
-  parent: [PartIPC, BaseRightLeg]
+  parent: [ BaseRightLeg]
   id: RightLegCybernetic
   abstract: true
   components:
@@ -64,7 +64,7 @@
     state: "r_leg-combined"
 
 - type: entity
-  parent: [PartIPC, BaseLeftHand]
+  parent: [ BaseLeftHand]
   id: LeftHandCybernetic
   name: cybernetic left hand
   components:
@@ -78,7 +78,7 @@
     state: "l_hand"
 
 - type: entity
-  parent: [PartIPC, BaseRightHand]
+  parent: [ BaseRightHand]
   id: RightHandCybernetic
   name: cybernetic right hand
   components:
@@ -92,7 +92,7 @@
     state: "r_hand"
 
 - type: entity
-  parent: [PartIPC, BaseLeftFoot]
+  parent: [ BaseLeftFoot]
   id: LeftFootCybernetic
   name: cybernetic left foot
   components:
@@ -106,7 +106,7 @@
     state: "l_foot"
 
 - type: entity
-  parent: [PartIPC, BaseRightFoot]
+  parent: [ BaseRightFoot]
   id: RightFootCybernetic
   name: cybernetic right foot
   components:

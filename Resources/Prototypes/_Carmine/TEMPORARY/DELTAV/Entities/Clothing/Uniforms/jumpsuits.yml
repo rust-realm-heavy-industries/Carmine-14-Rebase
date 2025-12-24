@@ -99,7 +99,7 @@
     sprite: DeltaV/Clothing/Uniforms/Jumpsuit/clerk.rsi
 
 - type: entity
-  parent: ClothingUniformBaseFlippable
+  parent: ClothingUniformBase
   id: ClothingUniformJumpsuitBlackTurtleneck
   name: black turtleneck
   description: A simple black turtleneck. Perfect for any wannabe spy.
@@ -110,7 +110,7 @@
     sprite: DeltaV/Clothing/Uniforms/Jumpsuit/black_turtleneck.rsi
 
 - type: entity
-  parent: [ ClothingUniformBaseFlipped, ClothingUniformJumpsuitBlackTurtleneck ]
+  parent: [ ClothingUniformJumpsuitBlackTurtleneck ]
   id: ClothingUniformJumpsuitBlackTurtleneckFlipped
   name: black turtleneck
 

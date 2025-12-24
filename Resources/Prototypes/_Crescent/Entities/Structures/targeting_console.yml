@@ -50,7 +50,7 @@
       state: generic_keys
 
 - type: entity
-  parent: BaseComputerCircuitboard
+  #parent: BaseComputerCircuitboard
   id: TargetingConsoleCircuitboard
   name: targeting console board
   description: A computer printed circuit board for a targeting console.

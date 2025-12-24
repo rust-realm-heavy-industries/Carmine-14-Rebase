@@ -1,5 +1,4 @@
 - type: entity
-  parent: BaseWallmount
   categories: [ HideSpawnMenu ]
   id: BaseAPC
   name: APC
@@ -158,7 +157,7 @@
 
 # APC under construction
 - type: entity
-  parent: BaseWallmountMetallic
+
   categories: [ HideSpawnMenu ]
   id: APCFrame
   name: APC frame

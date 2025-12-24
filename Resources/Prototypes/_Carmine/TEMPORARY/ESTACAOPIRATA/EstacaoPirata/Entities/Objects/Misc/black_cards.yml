@@ -1,6 +1,6 @@
 ---
 - type: entity
-  parent: [ BoxCardboard, BaseBagOpenClose ]
+  parent: [ BaseBagOpenClose ]
   id: CardBoxBase
   name: deck box
   categories: [ HideSpawnMenu ]

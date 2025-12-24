@@ -1,6 +1,5 @@
 ---
 - type: entity
-  parent: BasePlushie
   id: PlushiePearCat
   name: pear cat plushie
   description: Love blooms.

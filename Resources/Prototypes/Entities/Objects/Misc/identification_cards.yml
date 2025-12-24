@@ -919,7 +919,7 @@
 #Antags
 
 - type: entity
-  parent: [PassengerIDCard, BaseChameleon]
+  parent: [PassengerIDCard]
   id: AgentIDCard
   suffix: Agent
   components:

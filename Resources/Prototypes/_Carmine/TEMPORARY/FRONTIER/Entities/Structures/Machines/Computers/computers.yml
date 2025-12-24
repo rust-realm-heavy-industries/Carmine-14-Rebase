@@ -1,6 +1,6 @@
 ---
 - type: entity
-  parent: [BaseStructureDisableToolUse, BaseStructureIndestructible, BaseStructureComputer]
+  #parent: [BaseStructureDisableToolUse, BaseStructureComputer]
   id: ComputerPalletConsoleNFNormalMarket
   name: cargo sale computer
   suffix: Normal
@@ -63,7 +63,7 @@
     mod: 1.00
 
 - type: entity
-  parent: [BaseStructureDisableToolUse, BaseStructureIndestructible, ComputerIFF]
+  #parent: [BaseStructureDisableToolUse, ComputerIFF]
   id: ComputerIFFPOI
   name: IFF computer
   suffix: POI

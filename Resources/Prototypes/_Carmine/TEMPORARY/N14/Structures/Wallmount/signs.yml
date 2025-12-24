@@ -1,40 +1,40 @@
----
+# ---
 
-# 32x32
+# # 32x32
 
-- type: entity
-  parent: N14SignBar
-  id: N14SignClinic
-  name: clinic sign
-  description: A clinic sign. Hopefully they have meds.
-  components:
-  - type: Sprite
-    state: clinic
-  - type: PointLight
-    radius: 3
-    energy: 1
-    color: '#00ff00'
+# - type: entity
+#   parent: N14SignBar
+#   id: N14SignClinic
+#   name: clinic sign
+#   description: A clinic sign. Hopefully they have meds.
+#   components:
+#   - type: Sprite
+#     state: clinic
+#   - type: PointLight
+#     radius: 3
+#     energy: 1
+#     color: '#00ff00'
 
-# 64x32
+# # 64x32
 
-- type: entity
-  parent: N14SignBazaarOn
-  id: N14SignOpenBig
-  name: open sign
-  description: We are open sign. I hope so.
-  components:
-  - type: Sprite
-    state: we_open_open
-  - type: PointLight
-    radius: 2
-    energy: 1
-    color: '#ff0000'
+# - type: entity
+#   parent: N14SignBazaarOn
+#   id: N14SignOpenBig
+#   name: open sign
+#   description: We are open sign. I hope so.
+#   components:
+#   - type: Sprite
+#     state: we_open_open
+#   - type: PointLight
+#     radius: 2
+#     energy: 1
+#     color: '#ff0000'
 
-- type: entity
-  parent: N14SignBazaarOn
-  id: N14SignWorkersOnly
-  name: workers only sign
-  description: No tresspassing!
-  components:
-  - type: Sprite
-    state: workers
+# - type: entity
+#   parent: N14SignBazaarOn
+#   id: N14SignWorkersOnly
+#   name: workers only sign
+#   description: No tresspassing!
+#   components:
+#   - type: Sprite
+#     state: workers

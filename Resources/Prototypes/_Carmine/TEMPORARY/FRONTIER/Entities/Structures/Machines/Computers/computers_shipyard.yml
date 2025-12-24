@@ -1,6 +1,6 @@
 ---
 - type: entity
-  parent: [BaseStructureDisableToolUse, BaseStructureIndestructible, BaseStructureComputer]
+  #parent: [BaseStructureDisableToolUse, BaseStructureComputer]
   id: ComputerShipyardCrescent
   name: shipyard console
   suffix: Crescent

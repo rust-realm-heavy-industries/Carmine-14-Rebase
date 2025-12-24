@@ -27,7 +27,7 @@
     delay: 4
 
 - type: entity
-  parent: [BaseGlassBox, BaseItemCabinetGlass]
+  parent: [BaseGlassBox]
   id: GlassBox
   name: glass box
   description: A sturdy showcase for an expensive exhibit.

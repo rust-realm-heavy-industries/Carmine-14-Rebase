@@ -136,7 +136,6 @@
               Quantity: 600
 
 - type: entity
-  parent: BaseWrappedCube
   name: mop bucket cube
   id: MopBucketCubeWrapped
   description: Unwrap this to get a mop bucket cube.

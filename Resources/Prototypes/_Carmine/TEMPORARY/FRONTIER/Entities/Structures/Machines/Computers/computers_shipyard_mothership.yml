@@ -1,7 +1,7 @@
 ---
 # Custom console
 - type: entity
-  parent: [BaseStructureDisableToolUse, BaseStructureIndestructible, ComputerShipyardCrescent]
+  #parent: [BaseStructureDisableToolUse, ComputerShipyardCrescent]
   id: BaseMothershipComputer
   suffix: Mothership
   abstract: true
