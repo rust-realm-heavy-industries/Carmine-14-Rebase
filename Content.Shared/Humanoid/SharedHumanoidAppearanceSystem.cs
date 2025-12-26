@@ -1,25 +1,28 @@
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using Content.Shared.CCVar;
+using Content.Shared._EE.Contractors.Prototypes;
 using Content.Shared.Decals;
 using Content.Shared.Examine;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Humanoid.Prototypes;
+using Content.Shared._Shitmed.Humanoid.Events; // Shitmed Change
 using Content.Shared.IdentityManagement;
-using Content.Shared.Inventory;
 using Content.Shared.Preferences;
+using Content.Shared.HeightAdjust;
+using Microsoft.Extensions.Configuration;
 using Robust.Shared;
 using Robust.Shared.Configuration;
-using Robust.Shared.Enums;
 using Robust.Shared.GameObjects.Components.Localization;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using Content.Shared.Voidborn;
 using Robust.Shared.Serialization.Manager;
 using Robust.Shared.Serialization.Markdown;
 using Robust.Shared.Utility;
 using YamlDotNet.RepresentationModel;
+using Content.Shared._EE.GenderChange;
 
 namespace Content.Shared.Humanoid;
 
@@ -37,12 +40,21 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
     [Dependency] private readonly IConfigurationManager _cfgManager = default!;
     [Dependency] private readonly INetManager _netManager = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly ISerializationManager _serManager = default!;
     [Dependency] private readonly MarkingManager _markingManager = default!;
-    [Dependency] private readonly GrammarSystem _grammarSystem = default!;
-    [Dependency] private readonly IdentitySystem _identity = default!;
+    [Dependency] private readonly ISerializationManager _serManager = default!;
+    [Dependency] private readonly HeightAdjustSystem _heightAdjust = default!;
 
-    public static readonly ProtoId<SpeciesPrototype> DefaultSpecies = "Human";
+    [ValidatePrototypeId<SpeciesPrototype>]
+    public const string DefaultSpecies = "Human";
+
+    [ValidatePrototypeId<EmployerPrototype>]
+    public const string DefaultEmployer = "NanoTrasen";
+
+    [ValidatePrototypeId<NationalityPrototype>]
+    public const string DefaultNationality = "Bieselite";
+
+    [ValidatePrototypeId<LifepathPrototype>]
+    public const string DefaultLifepath = "Spacer";
 
     public override void Initialize()
     {
@@ -54,7 +66,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
 
     public DataNode ToDataNode(HumanoidCharacterProfile profile)
     {
-        var export = new HumanoidProfileExport()
+        var export = new HumanoidProfileExport
         {
             ForkId = _cfgManager.GetCVar(CVars.BuildForkId),
             Profile = profile,
@@ -73,9 +85,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
         var root = yamlStream.Documents[0].RootNode;
         var export = _serManager.Read<HumanoidProfileExport>(root.ToDataNode(), notNullableOverride: true);
 
-        /*
-         * Add custom handling here for forks / version numbers if you care.
-         */
+        // Add custom handling here for forks / version numbers if you care
 
         var profile = export.Profile;
         var collection = IoCManager.Instance;
@@ -86,12 +96,10 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
     private void OnInit(EntityUid uid, HumanoidAppearanceComponent humanoid, ComponentInit args)
     {
         if (string.IsNullOrEmpty(humanoid.Species) || _netManager.IsClient && !IsClientSide(uid))
-        {
             return;
-        }
 
         if (string.IsNullOrEmpty(humanoid.Initial)
-            || !_proto.Resolve(humanoid.Initial, out HumanoidProfilePrototype? startingSet))
+            || !_proto.TryIndex(humanoid.Initial, out HumanoidProfilePrototype? startingSet))
         {
             LoadProfile(uid, HumanoidCharacterProfile.DefaultWithSpecies(humanoid.Species), humanoid);
             return;
@@ -99,9 +107,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
 
         // Do this first, because profiles currently do not support custom base layers
         foreach (var (layer, info) in startingSet.CustomBaseLayers)
-        {
             humanoid.CustomBaseLayers.Add(layer, info);
-        }
 
         LoadProfile(uid, startingSet.Profile, humanoid);
     }
@@ -109,131 +115,95 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
     private void OnExamined(EntityUid uid, HumanoidAppearanceComponent component, ExaminedEvent args)
     {
         var identity = Identity.Entity(uid, EntityManager);
-        var species = GetSpeciesRepresentation(component.Species).ToLower();
+        var species = GetSpeciesRepresentation(component.Species, component.CustomSpecieName).ToLower();
         var age = GetAgeRepresentation(component.Species, component.Age);
 
-        args.PushText(Loc.GetString("humanoid-appearance-component-examine", ("user", identity), ("age", age), ("species", species)));
+        // WWDP EDIT
+        string locale = "humanoid-appearance-component-examine";
+
+        if (args.Examiner == args.Examined) // Use the selfaware locale when examining yourself
+            locale += "-selfaware";
+
+        // WWDP EDIT END
+
+        if (HasComp<VoidbornComponent>(uid))
+        {
+            var color = component.EyeColor.Name();
+            if (color != null)
+                age = Loc.GetString("identity-eye-voidborn", ("color", color));
+        }
+
+        args.PushText(Loc.GetString(locale, ("user", identity), ("age", age), ("species", species)), 100); //priority for examine
+
+        if (component.DisplayPronouns != null)
+            args.PushText(Loc.GetString("humanoid-appearance-component-examine-pronouns", ("user", identity), ("pronouns", component.DisplayPronouns)));
     }
 
     /// <summary>
     ///     Toggles a humanoid's sprite layer visibility.
     /// </summary>
-    /// <param name="ent">Humanoid entity</param>
+    /// <param name="uid">Humanoid mob's UID</param>
     /// <param name="layer">Layer to toggle visibility for</param>
-    /// <param name="visible">Whether to hide or show the layer. If more than once piece of clothing is hiding the layer, it may remain hidden.</param>
-    /// <param name="source">Equipment slot that has the clothing that is (or was) hiding the layer. If not specified, the change is "permanent" (i.e., see <see cref="HumanoidAppearanceComponent.PermanentlyHidden"/>)</param>
-    public void SetLayerVisibility(Entity<HumanoidAppearanceComponent?> ent,
+    /// <param name="humanoid">Humanoid component of the entity</param>
+    public void SetLayerVisibility(EntityUid uid,
         HumanoidVisualLayers layer,
         bool visible,
-        SlotFlags? source = null)
+        bool permanent = false,
+        HumanoidAppearanceComponent? humanoid = null)
     {
-        if (!Resolve(ent.Owner, ref ent.Comp, false))
+        if (!Resolve(uid, ref humanoid, false))
             return;
 
         var dirty = false;
-        SetLayerVisibility(ent!, layer, visible, source, ref dirty);
+        SetLayerVisibility(uid, humanoid, layer, visible, permanent, ref dirty);
         if (dirty)
-            Dirty(ent);
-    }
-
-    /// <summary>
-    ///     Clones a humanoid's appearance to a target mob, provided they both have humanoid components.
-    /// </summary>
-    /// <param name="source">Source entity to fetch the original appearance from.</param>
-    /// <param name="target">Target entity to apply the source entity's appearance to.</param>
-    /// <param name="sourceHumanoid">Source entity's humanoid component.</param>
-    /// <param name="targetHumanoid">Target entity's humanoid component.</param>
-    public void CloneAppearance(EntityUid source, EntityUid target, HumanoidAppearanceComponent? sourceHumanoid = null,
-        HumanoidAppearanceComponent? targetHumanoid = null)
-    {
-        if (!Resolve(source, ref sourceHumanoid, false) || !Resolve(target, ref targetHumanoid, false))
-            return;
-
-        targetHumanoid.Species = sourceHumanoid.Species;
-        targetHumanoid.SkinColor = sourceHumanoid.SkinColor;
-        targetHumanoid.EyeColor = sourceHumanoid.EyeColor;
-        targetHumanoid.Age = sourceHumanoid.Age;
-        targetHumanoid.CustomBaseLayers = new(sourceHumanoid.CustomBaseLayers);
-        targetHumanoid.MarkingSet = new(sourceHumanoid.MarkingSet);
-
-        SetSex(target, sourceHumanoid.Sex, false, targetHumanoid);
-        SetGender((target, targetHumanoid), sourceHumanoid.Gender);
-
-        Dirty(target, targetHumanoid);
+            Dirty(uid, humanoid);
     }
 
     /// <summary>
     ///     Sets the visibility for multiple layers at once on a humanoid's sprite.
     /// </summary>
-    /// <param name="ent">Humanoid entity</param>
+    /// <param name="uid">Humanoid mob's UID</param>
     /// <param name="layers">An enumerable of all sprite layers that are going to have their visibility set</param>
     /// <param name="visible">The visibility state of the layers given</param>
-    public void SetLayersVisibility(Entity<HumanoidAppearanceComponent?> ent,
-        IEnumerable<HumanoidVisualLayers> layers,
-        bool visible)
+    /// <param name="permanent">If this is a permanent change, or temporary. Permanent layers are stored in their own hash set.</param>
+    /// <param name="humanoid">Humanoid component of the entity</param>
+    public void SetLayersVisibility(EntityUid uid, IEnumerable<HumanoidVisualLayers> layers, bool visible, bool permanent = false,
+        HumanoidAppearanceComponent? humanoid = null)
     {
-        if (!Resolve(ent.Owner, ref ent.Comp, false))
+        if (!Resolve(uid, ref humanoid))
             return;
 
         var dirty = false;
 
         foreach (var layer in layers)
-        {
-            SetLayerVisibility(ent!, layer, visible, null, ref dirty);
-        }
+            SetLayerVisibility(uid, humanoid, layer, visible, permanent, ref dirty);
 
         if (dirty)
-            Dirty(ent);
+            Dirty(uid, humanoid);
     }
 
-    /// <inheritdoc cref="SetLayerVisibility(Entity{HumanoidAppearanceComponent?},HumanoidVisualLayers,bool,Nullable{SlotFlags})"/>
-    public virtual void SetLayerVisibility(
-        Entity<HumanoidAppearanceComponent> ent,
+    protected virtual void SetLayerVisibility(
+        EntityUid uid,
+        HumanoidAppearanceComponent humanoid,
         HumanoidVisualLayers layer,
         bool visible,
-        SlotFlags? source,
+        bool permanent,
         ref bool dirty)
     {
-#if DEBUG
-        if (source is {} s)
-        {
-            DebugTools.AssertNotEqual(s, SlotFlags.NONE);
-            // Check that only a single bit in the bitflag is set
-            var powerOfTwo = BitOperations.RoundUpToPowerOf2((uint)s);
-            DebugTools.AssertEqual((uint)s, powerOfTwo);
-        }
-#endif
-
         if (visible)
         {
-            if (source is not {} slot)
-            {
-                dirty |= ent.Comp.PermanentlyHidden.Remove(layer);
-            }
-            else if (ent.Comp.HiddenLayers.TryGetValue(layer, out var oldSlots))
-            {
-                // This layer might be getting hidden by more than one piece of equipped clothing.
-                // remove slot flag from the set of slots hiding this layer, then check if there are any left.
-                ent.Comp.HiddenLayers[layer] = ~slot & oldSlots;
-                if (ent.Comp.HiddenLayers[layer] == SlotFlags.NONE)
-                    ent.Comp.HiddenLayers.Remove(layer);
+            if (permanent)
+                dirty |= humanoid.PermanentlyHidden.Remove(layer);
 
-                dirty |= (oldSlots & slot) != 0;
-            }
+            dirty |= humanoid.HiddenLayers.Remove(layer);
         }
         else
         {
-            if (source is not { } slot)
-            {
-                dirty |= ent.Comp.PermanentlyHidden.Add(layer);
-            }
-            else
-            {
-                var oldSlots = ent.Comp.HiddenLayers.GetValueOrDefault(layer);
-                ent.Comp.HiddenLayers[layer] = slot | oldSlots;
-                dirty |= (oldSlots & slot) != slot;
-            }
+            if (permanent)
+                dirty |= humanoid.PermanentlyHidden.Add(layer);
 
+            dirty |= humanoid.HiddenLayers.Add(layer);
         }
     }
 
@@ -248,9 +218,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
     public void SetSpecies(EntityUid uid, string species, bool sync = true, HumanoidAppearanceComponent? humanoid = null)
     {
         if (!Resolve(uid, ref humanoid) || !_proto.TryIndex<SpeciesPrototype>(species, out var prototype))
-        {
             return;
-        }
 
         humanoid.Species = species;
         humanoid.MarkingSet.EnsureSpecies(species, humanoid.SkinColor, _markingManager);
@@ -259,23 +227,6 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
 
         if (sync)
             Dirty(uid, humanoid);
-    }
-
-    /// <summary>
-    /// Sets the gender in the entity's HumanoidAppearanceComponent and GrammarComponent.
-    /// </summary>
-    public void SetGender(Entity<HumanoidAppearanceComponent?> ent, Gender gender)
-    {
-        if (!Resolve(ent, ref ent.Comp))
-            return;
-
-        ent.Comp.Gender = gender;
-        Dirty(ent);
-
-        if (TryComp<GrammarComponent>(ent, out var grammar))
-            _grammarSystem.SetGender((ent, grammar), gender);
-
-        _identity.QueueIdentityUpdate(ent);
     }
 
     /// <summary>
@@ -292,16 +243,11 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
         if (!Resolve(uid, ref humanoid))
             return;
 
-        if (!_proto.Resolve<SpeciesPrototype>(humanoid.Species, out var species))
-        {
+        if (!_proto.TryIndex<SpeciesPrototype>(humanoid.Species, out var species))
             return;
-        }
 
-        if (verify && _proto.Resolve(species.SkinColoration, out var index))
-        {
-            var strategy = index.Strategy;
-            skinColor = strategy.EnsureVerified(skinColor);
-        }
+        if (verify && !SkinColor.VerifySkinColor(species.SkinColoration, skinColor))
+            skinColor = SkinColor.ValidSkinTone(species.SkinColoration, skinColor);
 
         humanoid.SkinColor = skinColor;
 
@@ -372,9 +318,65 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
         RaiseLocalEvent(uid, new SexChangedEvent(oldSex, sex));
 
         if (sync)
-        {
             Dirty(uid, humanoid);
-        }
+    }
+
+    /// <summary>
+    ///     Set the height of a humanoid mob
+    /// </summary>
+    /// <param name="uid">The humanoid mob's UID</param>
+    /// <param name="height">The height to set the mob to</param>
+    /// <param name="sync">Whether to immediately synchronize this to the humanoid mob, or not</param>
+    /// <param name="humanoid">Humanoid component of the entity</param>
+    public void SetHeight(EntityUid uid, float height, bool sync = true, HumanoidAppearanceComponent? humanoid = null)
+    {
+        if (!Resolve(uid, ref humanoid) || MathHelper.CloseTo(humanoid.Height, height, 0.001f))
+            return;
+
+        var species = _proto.Index(humanoid.Species);
+        humanoid.Height = Math.Clamp(height, species.MinHeight, species.MaxHeight);
+
+        if (sync)
+            Dirty(uid, humanoid);
+    }
+
+    /// <summary>
+    ///     Set the width of a humanoid mob
+    /// </summary>
+    /// <param name="uid">The humanoid mob's UID</param>
+    /// <param name="width">The width to set the mob to</param>
+    /// <param name="sync">Whether to immediately synchronize this to the humanoid mob, or not</param>
+    /// <param name="humanoid">Humanoid component of the entity</param>
+    public void SetWidth(EntityUid uid, float width, bool sync = true, HumanoidAppearanceComponent? humanoid = null)
+    {
+        if (!Resolve(uid, ref humanoid) || MathHelper.CloseTo(humanoid.Width, width, 0.001f))
+            return;
+
+        var species = _proto.Index(humanoid.Species);
+        humanoid.Width = Math.Clamp(width, species.MinWidth, species.MaxWidth);
+
+        if (sync)
+            Dirty(uid, humanoid);
+    }
+
+    /// <summary>
+    ///     Set the scale of a humanoid mob
+    /// </summary>
+    /// <param name="uid">The humanoid mob's UID</param>
+    /// <param name="scale">The scale to set the mob to</param>
+    /// <param name="sync">Whether to immediately synchronize this to the humanoid mob, or not</param>
+    /// <param name="humanoid">Humanoid component of the entity</param>
+    public void SetScale(EntityUid uid, Vector2 scale, bool sync = true, HumanoidAppearanceComponent? humanoid = null)
+    {
+        if (!Resolve(uid, ref humanoid))
+            return;
+
+        var species = _proto.Index(humanoid.Species);
+        humanoid.Height = Math.Clamp(scale.Y, species.MinHeight, species.MaxHeight);
+        humanoid.Width = Math.Clamp(scale.X, species.MinWidth, species.MaxWidth);
+
+        if (sync)
+            Dirty(uid, humanoid);
     }
 
     /// <summary>
@@ -389,13 +391,13 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
             return;
 
         if (!Resolve(uid, ref humanoid))
-        {
             return;
-        }
 
         SetSpecies(uid, profile.Species, false, humanoid);
         SetSex(uid, profile.Sex, false, humanoid);
         humanoid.EyeColor = profile.Appearance.EyeColor;
+        var ev = new EyeColorInitEvent();
+        RaiseLocalEvent(uid, ref ev);
 
         SetSkinColor(uid, profile.Appearance.SkinColor, false);
 
@@ -408,13 +410,9 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
             if (_markingManager.TryGetMarking(marking, out var prototype))
             {
                 if (!prototype.ForcedColoring)
-                {
                     AddMarking(uid, marking.MarkingId, marking.MarkingColors, false);
-                }
                 else
-                {
                     markingFColored.Add(marking, prototype);
-                }
             }
         }
 
@@ -427,15 +425,11 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
 
         if (_markingManager.Markings.TryGetValue(profile.Appearance.HairStyleId, out var hairPrototype) &&
             _markingManager.CanBeApplied(profile.Species, profile.Sex, hairPrototype, _proto))
-        {
             AddMarking(uid, profile.Appearance.HairStyleId, hairColor, false);
-        }
 
         if (_markingManager.Markings.TryGetValue(profile.Appearance.FacialHairStyleId, out var facialHairPrototype) &&
             _markingManager.CanBeApplied(profile.Species, profile.Sex, facialHairPrototype, _proto))
-        {
             AddMarking(uid, profile.Appearance.FacialHairStyleId, facialHairColor, false);
-        }
 
         humanoid.MarkingSet.EnsureSpecies(profile.Species, profile.Appearance.SkinColor, _markingManager, _proto);
 
@@ -455,13 +449,28 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
 
         humanoid.Gender = profile.Gender;
         if (TryComp<GrammarComponent>(uid, out var grammar))
-        {
-            _grammarSystem.SetGender((uid, grammar), profile.Gender);
-        }
+            grammar.Gender = profile.Gender;
 
+        humanoid.DisplayPronouns = profile.DisplayPronouns;
+        humanoid.StationAiName = profile.StationAiName;
+        humanoid.CyborgName = profile.CyborgName;
         humanoid.Age = profile.Age;
 
+        humanoid.CustomSpecieName = profile.Customspeciename;
+
+        var species = _proto.Index(humanoid.Species);
+
+        if (profile.Height <= 0 || profile.Width <= 0)
+            SetScale(uid, new Vector2(species.DefaultWidth, species.DefaultHeight), true, humanoid);
+        else
+            SetScale(uid, new Vector2(profile.Width, profile.Height), true, humanoid);
+
+        _heightAdjust.SetScale(uid, new Vector2(humanoid.Width, humanoid.Height));
+
+        humanoid.LastProfileLoaded = profile; // DeltaV - let paradox anomaly be cloned
+
         Dirty(uid, humanoid);
+        RaiseLocalEvent(uid, new ProfileLoadFinishedEvent());
     }
 
     /// <summary>
@@ -477,9 +486,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
     {
         if (!Resolve(uid, ref humanoid)
             || !_markingManager.Markings.TryGetValue(marking, out var prototype))
-        {
             return;
-        }
 
         var markingObject = prototype.AsMarking();
         markingObject.Forced = forced;
@@ -500,9 +507,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
     private void EnsureDefaultMarkings(EntityUid uid, HumanoidAppearanceComponent? humanoid)
     {
         if (!Resolve(uid, ref humanoid))
-        {
             return;
-        }
         humanoid.MarkingSet.EnsureDefault(humanoid.SkinColor, humanoid.EyeColor, _markingManager);
     }
 
@@ -519,9 +524,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
     {
         if (!Resolve(uid, ref humanoid)
             || !_markingManager.Markings.TryGetValue(marking, out var prototype))
-        {
             return;
-        }
 
         var markingObject = new Marking(marking, colors);
         markingObject.Forced = forced;
@@ -534,12 +537,13 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
     /// <summary>
     /// Takes ID of the species prototype, returns UI-friendly name of the species.
     /// </summary>
-    public string GetSpeciesRepresentation(string speciesId)
+    public string GetSpeciesRepresentation(string speciesId, string? customespeciename)
     {
+        if (!string.IsNullOrEmpty(customespeciename))
+            return Loc.GetString(customespeciename);
+
         if (_proto.TryIndex<SpeciesPrototype>(speciesId, out var species))
-        {
             return Loc.GetString(species.Name);
-        }
 
         Log.Error("Tried to get representation of unknown species: {speciesId}");
         return Loc.GetString("humanoid-appearance-component-unknown-species");
@@ -554,15 +558,27 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
         }
 
         if (age < speciesPrototype.YoungAge)
-        {
             return Loc.GetString("identity-age-young");
-        }
 
         if (age < speciesPrototype.OldAge)
-        {
             return Loc.GetString("identity-age-middle-aged");
-        }
 
         return Loc.GetString("identity-age-old");
+    }
+    /// <summary>
+    ///     Set a humanoid mob's gender.
+    /// </summary>
+    public void SetGender(EntityUid uid, Robust.Shared.Enums.Gender gender, HumanoidAppearanceComponent? humanoid = null)
+    {
+        if (!Resolve(uid, ref humanoid) || humanoid.Gender == gender)
+            return;
+        if (TryComp<GrammarComponent>(uid, out var grammar))
+        {
+            grammar.Gender = gender;
+            Dirty(uid, grammar);
+        }
+        humanoid.Gender = gender;
+        RaiseLocalEvent(uid, new GenderChangeEvent(uid, gender), true);
+        Dirty(uid, humanoid);
     }
 }

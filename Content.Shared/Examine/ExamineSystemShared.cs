@@ -1,6 +1,9 @@
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Text;
+using Content.Shared._White.Examine;
 using Content.Shared.Eye.Blinding.Components;
-using Content.Shared.Ghost;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -15,7 +18,6 @@ namespace Content.Shared.Examine
 {
     public abstract partial class ExamineSystemShared : EntitySystem
     {
-        [Dependency] private readonly OccluderSystem _occluder = default!;
         [Dependency] private readonly SharedTransformSystem _transform = default!;
         [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
         [Dependency] private readonly SharedInteractionSystem _interactionSystem = default!;
@@ -43,8 +45,6 @@ namespace Content.Shared.Examine
 
         protected const float ExamineBlurrinessMult = 2.5f;
 
-        private EntityQuery<GhostComponent> _ghostQuery;
-
         /// <summary>
         ///     Creates a new examine tooltip with arbitrary info.
         /// </summary>
@@ -53,10 +53,6 @@ namespace Content.Shared.Examine
         public bool IsInDetailsRange(EntityUid examiner, EntityUid entity)
         {
             if (IsClientSide(entity))
-                return true;
-
-            // Ghosts can see everything.
-            if (_ghostQuery.HasComp(examiner))
                 return true;
 
             // check if the mob is in critical or dead
@@ -111,7 +107,7 @@ namespace Content.Shared.Examine
             if (!examinerComp.CheckInRangeUnOccluded)
                 return true;
 
-            if (Comp<TransformComponent>(examiner).MapID != target.MapId)
+            if (EntityManager.GetComponent<TransformComponent>(examiner).MapID != target.MapId)
                 return false;
 
             // Do target InRangeUnoccluded which has different checks.
@@ -193,9 +189,12 @@ namespace Content.Shared.Examine
                 length = MaxRaycastRange;
             }
 
+            IoCManager.Resolve(ref entMan);
+
+            var occluderSystem = EntityManager.System<OccluderSystem>();
             var ray = new Ray(origin.Position, dir.Normalized());
-            var rayResults = _occluder
-                .IntersectRayWithPredicate(origin.MapId, ray, length, state, predicate, false);
+            var rayResults = occluderSystem
+                .IntersectRayWithPredicate(origin.MapId, ray, length, state, predicate, false).ToList();
 
             if (rayResults.Count == 0) return true;
 
@@ -203,7 +202,7 @@ namespace Content.Shared.Examine
 
             foreach (var result in rayResults)
             {
-                if (!TryComp(result.HitEntity, out OccluderComponent? o))
+                if (!entMan.TryGetComponent(result.HitEntity, out OccluderComponent? o))
                 {
                     continue;
                 }
@@ -240,6 +239,7 @@ namespace Content.Shared.Examine
 
         public bool InRangeUnOccluded(EntityUid origin, EntityCoordinates other, float range = ExamineRange, Ignored? predicate = null, bool ignoreInsideBlocker = true)
         {
+            var entMan = IoCManager.Resolve<IEntityManager>();
             var originPos = _transform.GetMapCoordinates(origin);
             var otherPos = _transform.ToMapCoordinates(other);
 
@@ -248,6 +248,7 @@ namespace Content.Shared.Examine
 
         public bool InRangeUnOccluded(EntityUid origin, MapCoordinates other, float range = ExamineRange, Ignored? predicate = null, bool ignoreInsideBlocker = true)
         {
+            var entMan = IoCManager.Resolve<IEntityManager>();
             var originPos = _transform.GetMapCoordinates(origin);
 
             return InRangeUnOccluded(originPos, other, range, predicate, ignoreInsideBlocker);
@@ -263,12 +264,11 @@ namespace Content.Shared.Examine
             }
 
             var hasDescription = false;
-            var metadata = MetaData(entity);
 
             //Add an entity description if one is declared
-            if (!string.IsNullOrEmpty(metadata.EntityDescription))
+            if (!string.IsNullOrEmpty(EntityManager.GetComponent<MetaDataComponent>(entity).EntityDescription))
             {
-                message.AddText(metadata.EntityDescription);
+                message.AddText(EntityManager.GetComponent<MetaDataComponent>(entity).EntityDescription);
                 hasDescription = true;
             }
 
@@ -280,6 +280,10 @@ namespace Content.Shared.Examine
             RaiseLocalEvent(entity, examinedEvent);
 
             var newMessage = examinedEvent.GetTotalMessage();
+
+            // Goobstation Change: I dont seem to have a way to get the event of examination to happen after EVERYTHING else, so fuck it.
+            var examineCompletedEvent = new ExamineCompletedEvent(newMessage, entity, examiner.Value);
+            RaiseLocalEvent(entity, examineCompletedEvent);
 
             // pop color tag
             newMessage.Pop();
@@ -370,7 +374,7 @@ namespace Content.Shared.Examine
             var totalMessage = new FormattedMessage(Message);
             parts.Sort(Comparison);
 
-            if (_hasDescription && parts.Count > 0)
+            if (_hasDescription)
             {
                 totalMessage.PushNewline();
             }
@@ -382,8 +386,6 @@ namespace Content.Shared.Examine
                     totalMessage.PushNewline();
             }
 
-            totalMessage.TrimEnd();
-
             return totalMessage;
         }
 
@@ -393,7 +395,7 @@ namespace Content.Shared.Examine
         ///     sort messages the same as well as grouped together properly, even if subscriptions are different.
         ///     You should wrap it in a using() block so popping automatically occurs.
         /// </summary>
-        public ExamineGroupDisposable PushGroup(string groupName, int priority=0)
+        public ExamineGroupDisposable PushGroup(string groupName, int priority = 0)
         {
             // Ensure that other examine events correctly ended their groups.
             DebugTools.Assert(_currentGroupPart == null);
@@ -408,10 +410,8 @@ namespace Content.Shared.Examine
         private void PopGroup()
         {
             DebugTools.Assert(_currentGroupPart != null);
-            if (_currentGroupPart != null && !_currentGroupPart.Message.IsEmpty)
-            {
+            if (_currentGroupPart != null)
                 Parts.Add(_currentGroupPart);
-            }
 
             _currentGroupPart = null;
         }
@@ -423,7 +423,7 @@ namespace Content.Shared.Examine
         /// </summary>
         /// <seealso cref="PushMarkup"/>
         /// <seealso cref="PushText"/>
-        public void PushMessage(FormattedMessage message, int priority=0)
+        public void PushMessage(FormattedMessage message, int priority = 0)
         {
             if (message.Nodes.Count == 0)
                 return;
@@ -446,9 +446,9 @@ namespace Content.Shared.Examine
         /// </summary>
         /// <seealso cref="PushText"/>
         /// <seealso cref="PushMessage"/>
-        public void PushMarkup(string markup, int priority=0)
+        public void PushMarkup(string markup, int priority = 0)
         {
-            PushMessage(FormattedMessage.FromMarkupOrThrow(markup), priority);
+            PushMessage(FormattedMessage.FromMarkupPermissive(markup), priority);
         }
 
         /// <summary>
@@ -458,7 +458,7 @@ namespace Content.Shared.Examine
         /// </summary>
         /// <seealso cref="PushMarkup"/>
         /// <seealso cref="PushMessage"/>
-        public void PushText(string text, int priority=0)
+        public void PushText(string text, int priority = 0)
         {
             var msg = new FormattedMessage();
             msg.AddText(text);
@@ -494,9 +494,9 @@ namespace Content.Shared.Examine
         /// </summary>
         /// <seealso cref="AddText"/>
         /// <seealso cref="AddMessage"/>
-        public void AddMarkup(string markup, int priority=0)
+        public void AddMarkup(string markup, int priority = 0)
         {
-            AddMessage(FormattedMessage.FromMarkupOrThrow(markup), priority);
+            AddMessage(FormattedMessage.FromMarkupPermissive(markup), priority);
         }
 
         /// <summary>
@@ -506,7 +506,7 @@ namespace Content.Shared.Examine
         /// </summary>
         /// <seealso cref="AddMarkup"/>
         /// <seealso cref="AddMessage"/>
-        public void AddText(string text, int priority=0)
+        public void AddText(string text, int priority = 0)
         {
             var msg = new FormattedMessage();
             msg.AddText(text);

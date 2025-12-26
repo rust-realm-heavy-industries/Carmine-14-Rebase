@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Events;
 using Content.Shared.Damage.Prototypes;
@@ -57,17 +58,11 @@ public sealed class DamageExamineSystem : EntitySystem
 
         if (string.IsNullOrEmpty(type))
         {
-            msg.AddMarkupOrThrow(Loc.GetString("damage-examine"));
+            msg.AddMarkup(Loc.GetString("damage-examine"));
         }
         else
         {
-            if (damageSpecifier.GetTotal() == FixedPoint2.Zero && !damageSpecifier.AnyPositive())
-            {
-                msg.AddMarkupOrThrow(Loc.GetString("damage-none"));
-                return msg;
-            }
-
-            msg.AddMarkupOrThrow(Loc.GetString("damage-examine-type", ("type", type)));
+            msg.AddMarkup(Loc.GetString("damage-examine-type", ("type", type)));
         }
 
         foreach (var damage in damageSpecifier.DamageDict)
@@ -75,10 +70,9 @@ public sealed class DamageExamineSystem : EntitySystem
             if (damage.Value != FixedPoint2.Zero)
             {
                 msg.PushNewline();
-                msg.AddMarkupOrThrow(Loc.GetString("damage-value", ("type", _prototype.Index<DamageTypePrototype>(damage.Key).LocalizedName), ("amount", damage.Value)));
+                msg.AddMarkup(Loc.GetString("damage-value", ("type", _prototype.Index<DamageTypePrototype>(damage.Key).LocalizedName), ("amount", damage.Value)));
             }
         }
-
         return msg;
     }
 }

@@ -1,13 +1,14 @@
+---
 - type: entity
-  save: false
   parent:
   - BaseMob
+  - ESBaseMob # ES START
   - MobDamageable
   - MobPolymorphable
   - MobCombat
-  - StripableInventoryBase
   id: BaseMobSpecies
   abstract: true
+  save: false
   components:
   - type: Sprite
     layers:
@@ -15,12 +16,16 @@
     - map: [ "enum.HumanoidVisualLayers.Head" ]
     - map: [ "enum.HumanoidVisualLayers.Snout" ]
     - map: [ "enum.HumanoidVisualLayers.Eyes" ]
+    - map: [ "enum.HumanoidVisualLayers.Face" ]
     - map: [ "enum.HumanoidVisualLayers.RArm" ]
     - map: [ "enum.HumanoidVisualLayers.LArm" ]
     - map: [ "enum.HumanoidVisualLayers.RLeg" ]
     - map: [ "enum.HumanoidVisualLayers.LLeg" ]
-    - map: [ "enum.HumanoidVisualLayers.UndergarmentBottom" ]
-    - map: [ "enum.HumanoidVisualLayers.UndergarmentTop" ]
+#     - shader: StencilClear
+#      sprite: Mobs/Species/Human/parts.rsi
+#      state: l_leg
+    - map: [ "enum.HumanoidVisualLayers.Underwear" ]
+    - map: [ "enum.HumanoidVisualLayers.Undershirt" ]
     - map: ["jumpsuit"]
     - map: ["enum.HumanoidVisualLayers.LFoot"]
     - map: ["enum.HumanoidVisualLayers.RFoot"]
@@ -29,18 +34,20 @@
     - map: [ "gloves" ]
     - map: [ "shoes" ]
     - map: [ "ears" ]
+    - map: [ "innerBelt" ]
+    - map: [ "innerNeck" ]
+    - map: [ "outerClothing" ]
     - map: [ "eyes" ]
     - map: [ "belt" ]
     - map: [ "id" ]
-    - map: [ "outerClothing" ]
-    - map: [ "back" ]
     - map: [ "neck" ]
-    - map: [ "enum.HumanoidVisualLayers.SnoutCover" ]
+    - map: [ "back" ]
     - map: [ "enum.HumanoidVisualLayers.FacialHair" ]
     - map: [ "enum.HumanoidVisualLayers.Hair" ]
     - map: [ "enum.HumanoidVisualLayers.HeadSide" ]
     - map: [ "enum.HumanoidVisualLayers.HeadTop" ]
     - map: [ "enum.HumanoidVisualLayers.Tail" ]
+    - map: [ "enum.HumanoidVisualLayers.Wings" ]
     - map: [ "mask" ]
     - map: [ "head" ]
     - map: [ "pocket1" ]
@@ -82,11 +89,10 @@
     horizontalRotation: 90
   - type: HumanoidAppearance
     species: Human
-  - type: TypingIndicator
   - type: SlowOnDamage
     speedModifierThresholds:
-      60: 0.7
-      80: 0.5
+      60: 0.75
+      80: 0.55
   - type: Fixtures
     fixtures: # TODO: This needs a second fixture just for mob collisions.
       fix1:
@@ -100,6 +106,7 @@
         layer:
         - MobLayer
   - type: FloorOcclusion
+  - type: Mood
   - type: RangedDamageSound
     soundGroups:
       Brute:
@@ -118,18 +125,29 @@
     - reagents: [Water, SpaceCleaner]
       methods: [Touch]
       effects:
-      - !type:WashCreamPie
+      - !type:WashCreamPieReaction
   - type: StatusEffects
     allowed:
+    - Stun
+    - KnockedDown
+    - SlowedDown
+    - Stutter
+    - SeeingRainbows
     - Electrocution
+    - Drunk
+    - SlurredSpeech
     - RatvarianLanguage
     - PressureImmunity
     - Muted
+    - ForcedSleep
     - TemporaryBlindness
     - Pacified
+    - StaminaModifier
     - Flashed
     - RadiationProtection
-    - Adrenaline
+    - Drowsiness
+    - PsionicsDisabled
+    - PsionicallyInsulated
   - type: Body
     prototype: Human
     requiredLegs: 2
@@ -138,6 +156,8 @@
   - type: Hands
   - type: ComplexInteraction
   - type: Internals
+  - type: Inventory
+  - type: InventorySlots
   - type: FloatingVisuals
   - type: Climbing
   - type: Cuffable
@@ -157,11 +177,17 @@
     damage:
       types:
         Blunt: 5
+    heavyRateModifier: 1
+    heavyDamageBaseModifier: 1
+    heavyPartDamageMultiplier: 1
+    heavyStaminaCost: 0
+    maxTargets: 1
   - type: SleepEmitSound
   - type: SSDIndicator
   - type: StandingState
-  - type: Crawler
+  - type: Fingerprint
   - type: Dna
+  - type: Scent
   - type: MindContainer
     showExamineInfo: true
   - type: CanEnterCryostorage
@@ -175,16 +201,26 @@
     factions:
     - NanoTrasen
   - type: CreamPied
-  - type: ParcelWrapOverride
-    parcelPrototype: WrappedParcelHumanoid
-    wrapDelay: 5
   - type: Stripping
+  - type: Strippable
   - type: UserInterface
     interfaces:
       enum.HumanoidMarkingModifierKey.Key:
         type: HumanoidMarkingModifierBoundUserInterface
       enum.StrippingUiKey.Key:
         type: StrippableBoundUserInterface
+      # Goobstation - changelings
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
+      enum.InstrumentUiKey.Key:
+        type: InstrumentBoundUserInterface
+        requireInputValidation: false
+      enum.RadialSelectorUiKey.Key:
+        type: RadialSelectorMenuBUI
+      enum.ListViewSelectorUiKey.Key:
+        type: ListViewSelectorBUI
+      enum.SurgeryUIKey.Key:
+        type: SurgeryBui
   - type: Puller
   - type: Speech
     speechSounds: Alto
@@ -203,15 +239,24 @@
   - type: MobPrice
     price: 1500 # Kidnapping a living person and selling them for cred is a good move.
     deathPenalty: 0.01 # However they really ought to be living and intact, otherwise they're worth 100x less.
+  - type: CanEscapeInventory # Carrying system from nyanotrasen.
+  - type: LanguageKnowledge # This is here so even if species doesn't have a defined language, they at least speak GC
+    speaks:
+    - TauCetiBasic
+    understands:
+    - TauCetiBasic
   - type: Tag
     tags:
     - CanPilot
     - FootstepSound
     - DoorBumpOpener
-    - AnomalyHost
+  - type: Targeting
+  - type: SurgeryTarget
+  - type: MovedByPressure
+    cutoffTime: 1.0
+  - type: ExaminableCharacter # WWDP
 
 - type: entity
-  save: false
   parent:
   - MobBloodstream
   - MobRespirator
@@ -220,22 +265,48 @@
   - BaseMobSpecies
   id: BaseMobSpeciesOrganic
   abstract: true
+  save: false
   components:
+  - type: Flashable
+  - type: Absorbable # Goobstation - changelings
   - type: Barotrauma
     damage:
       types:
-        Blunt: 0.50 #per second, scales with pressure and other constants.
-        Heat: 0.1
-  - type: PassiveDamage # Slight passive regen. Assuming one damage type, comes out to about 4 damage a minute.
-    allowedStates:
-    - Alive
-    damageCap: 20
-    damage:
+        Blunt: 0.55 #per second, scales with pressure and other constants.
+  - type: PassiveRegeneration
+    healPerTick:
       types:
-        Heat: -0.07
-      groups:
-        Brute: -0.07
-  - type: Fingerprint
+        Heat: -0.3
+        Poison: -0.1
+        Shock: -0.1
+        Cold: -0.2
+        Piercing: -0.3
+        Blunt: -0.3
+        Slash: -0.3
+    thirstDrain: 0.1
+    hungerDrain: 0.2
+  # Organs
+  - type: StatusEffects
+    allowed:
+    - Stun
+    - KnockedDown
+    - SlowedDown
+    - Stutter
+    - SeeingRainbows
+    - Electrocution
+    - ForcedSleep
+    - TemporaryBlindness
+    - Drunk
+    - SlurredSpeech
+    - RatvarianLanguage
+    - PressureImmunity
+    - Muted
+    - Pacified
+    - StaminaModifier
+    - PsionicsDisabled
+    - PsionicallyInsulated
+    - RadiationProtection
+    - Drowsiness
   - type: Blindable
   # Other
   - type: Temperature
@@ -251,9 +322,9 @@
         Heat: 1.5 #per second, scales with temperature & other constants
   - type: TemperatureSpeed
     thresholds:
-      293: 0.9
-      280: 0.8
-      260: 0.7
+      293: 0.8
+      280: 0.6
+      260: 0.4
   - type: ThermalRegulator
     metabolismHeat: 800
     radiatedHeat: 100
@@ -261,7 +332,7 @@
     sweatHeatRegulation: 2000
     shiveringHeatRegulation: 2000
     normalBodyTemperature: 310.15
-    thermalRegulationTemperatureThreshold: 2
+    thermalRegulationTemperatureThreshold: 25
   - type: Perishable
   - type: Butcherable
     butcheringType: Spike # TODO human.
@@ -277,16 +348,27 @@
         Asphyxiation: -1.0
   - type: FireVisuals
     alternateState: Standing
-  - type: StunVisuals
+  - type: OfferItem
+  - type: LayingDown
+  - type: BloodstreamAffectedByMass
+    power: 0.6 # A minimum size felinid will have 30% blood, a minimum size vulp will have 60%, a maximum size oni will have ~200%
+  - type: EmitSoundOnInternalsActive
+    sound:
+      collection: InternalsBreathing
+      params:
+        maxDistance: 3
+        rolloffFactor: 2
+        volume: -10
 
 - type: entity
-  save: false
   id: BaseSpeciesDummy
-  parent: InventoryBase
   abstract: true
+  save: false
   components:
   - type: Hands
   - type: ComplexInteraction
+  - type: Inventory
+  - type: InventorySlots
   - type: ContainerContainer
   - type: Icon
     sprite: Mobs/Species/Human/parts.rsi
@@ -300,12 +382,16 @@
     - map: [ "enum.HumanoidVisualLayers.Head" ]
     - map: [ "enum.HumanoidVisualLayers.Snout" ]
     - map: [ "enum.HumanoidVisualLayers.Eyes" ]
+    - map: [ "enum.HumanoidVisualLayers.Face" ]
     - map: [ "enum.HumanoidVisualLayers.RArm" ]
     - map: [ "enum.HumanoidVisualLayers.LArm" ]
     - map: [ "enum.HumanoidVisualLayers.RLeg" ]
     - map: [ "enum.HumanoidVisualLayers.LLeg" ]
-    - map: [ "enum.HumanoidVisualLayers.UndergarmentBottom" ]
-    - map: [ "enum.HumanoidVisualLayers.UndergarmentTop" ]
+#     - shader: StencilClear
+#      sprite: Mobs/Species/Human/parts.rsi
+#      state: l_leg
+    - map: [ "enum.HumanoidVisualLayers.Underwear" ]
+    - map: [ "enum.HumanoidVisualLayers.Undershirt" ]
     - map: ["jumpsuit"]
     - map: ["enum.HumanoidVisualLayers.LFoot"]
     - map: ["enum.HumanoidVisualLayers.RFoot"]
@@ -319,13 +405,14 @@
     - map: [ "gloves" ]
     - map: [ "shoes" ]
     - map: [ "ears" ]
+    - map: [ "innerBelt" ]
+    - map: [ "innerNeck" ]
+    - map: [ "outerClothing" ]
     - map: [ "eyes" ]
     - map: [ "belt" ]
     - map: [ "id" ]
-    - map: [ "outerClothing" ]
-    - map: [ "back" ]
     - map: [ "neck" ]
-    - map: [ "enum.HumanoidVisualLayers.SnoutCover" ]
+    - map: [ "back" ]
     - map: [ "enum.HumanoidVisualLayers.FacialHair" ]
     - map: [ "enum.HumanoidVisualLayers.Hair" ]
     - map: [ "enum.HumanoidVisualLayers.HeadSide" ]
@@ -341,6 +428,7 @@
   - type: Body
     prototype: Human
     requiredLegs: 2
+  - type: Absorbable # Goobstation - changelings
   - type: UserInterface
     interfaces:
       enum.HumanoidMarkingModifierKey.Key: # sure, this can go here too
