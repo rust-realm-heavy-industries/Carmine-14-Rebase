@@ -1,3 +1,4 @@
+using Content.Shared._Crescent;
 using Content.Shared.Atmos;
 using Content.Shared.Light.Components;
 using Content.Shared.Movement.Systems;
@@ -15,24 +16,41 @@ namespace Content.Shared.Maps
     [Prototype("tile")]
     public sealed partial class ContentTileDefinition : IPrototype, IInheritingPrototype, ITileDefinition
     {
-        public static readonly ProtoId<ToolQualityPrototype> PryingToolQuality = "Prying";
+        [ValidatePrototypeId<ToolQualityPrototype>]
+        public const string PryingToolQuality = "Prying";
 
         public const string SpaceID = "Space";
 
-        [ParentDataField(typeof(AbstractPrototypeIdArraySerializer<ContentTileDefinition>))]
+        [ParentDataFieldAttribute(typeof(AbstractPrototypeIdArraySerializer<ContentTileDefinition>))]
         public string[]? Parents { get; private set; }
 
         [NeverPushInheritance]
         [AbstractDataFieldAttribute]
         public bool Abstract { get; private set; }
 
-        [IdDataField] public string ID { get; private set; } = string.Empty;
+        [IdDataField] public string ID { get; } = string.Empty;
 
         public ushort TileId { get; private set; }
 
         [DataField("name")]
         public string Name { get; private set; } = "";
         [DataField("sprite")] public ResPath? Sprite { get; private set; }
+        /* SPCR/MLGTASTICa 2025
+         The base name of the DecalPrototypes for directionals.
+         Decals are used to do the directional feel of the tile.
+         If you set your directionals name to be "ground" , you will need to have
+         3 decal prototypes, named groundEdge, groundCorner and groundOuterCorner
+         with rotation 0 being at the direction North for edges , and North-East for corners.
+         Corners draw over edges. Ensure your edge overlap is fully covered by the corner sprite.
+         */
+        [DataField("directionals")] public string? Directionals { get; private set; }
+
+        [DataField("directionalRequirement")] public DirectionalType DirectionalType { get; private set; }
+
+        // Wheter the sprite has a special directional defined for each direction. Makes it so instead of rotation,
+        // It will look for decals with direction appended, like EdgeN , EdgeS, edgeE, edgeW
+        // for corners it will be CornerNE, CornerNW , etc etc
+        [DataField("uniqueDirectionals")] public bool uniqueDirectionals { get; private set; }
 
         [DataField("edgeSprites")] public Dictionary<Direction, ResPath> EdgeSprites { get; private set; } = new();
 
@@ -46,6 +64,10 @@ namespace Content.Shared.Maps
         [DataField]
         public PrototypeFlags<ToolQualityPrototype> DeconstructTools { get; set; } = new();
 
+        // Delta V
+        [DataField("canShovel")] public bool CanShovel { get; private set; }
+        //Delta V
+        
         /// <summary>
         /// Effective mass of this tile for grid impacts.
         /// </summary>
@@ -67,17 +89,11 @@ namespace Content.Shared.Maps
         /// </summary>
         [DataField("barestepSounds")] public SoundSpecifier? BarestepSounds { get; private set; } = new SoundCollectionSpecifier("BarestepHard");
 
-        /// <summary>
-        /// Base friction modifier for this tile.
-        /// </summary>
-        [DataField("friction")] public float Friction { get; set; } = 1f;
+        // ES START
+        [DataField("friction")] public float Friction { get; set; } = 2.5f;
+        // ES END
 
         [DataField("variants")] public byte Variants { get; set; } = 1;
-
-        /// <summary>
-        ///     Allows the tile to be rotated/mirrored when placed on a grid.
-        /// </summary>
-        [DataField] public bool AllowRotationMirror { get; set; } = false;
 
         /// <summary>
         /// This controls what variants the `variantize` command is allowed to use.
@@ -105,6 +121,13 @@ namespace Content.Shared.Maps
         public float? MobFriction { get; private set; }
 
         /// <summary>
+        ///     "Average" static coefficient of friction for assuming a steel tile. This is only used as a fallback for a fallback for a fallback,
+        ///     except in the case of Space Wind. This default value is assuming an interaction interface of "Rubber on steel tile".
+        /// </summary>
+        [DataField]
+        public float? MobFrictionNoInput;
+
+        /// <summary>
         ///     Accel override for mob mover in <see cref="SharedMoverController"/>
         /// </summary>
         [DataField("mobAcceleration")]
@@ -122,9 +145,29 @@ namespace Content.Shared.Maps
         /// </summary>
         [DataField("indestructible")] public bool Indestructible = false;
 
+
+
         public void AssignTileId(ushort id)
         {
             TileId = id;
         }
+
+        /// <summary>
+        ///     For optionally handling per-tile behavior of airflow simulation. Which is useful for ZAS-like air sim, and for MAS.
+        ///     Intentionally public because I want entities to be able to mess with this, such as ship shielding that prevents air from flowing across a shielded tile.
+        ///     For planet maps, you can instead mark the GridAtmosphere as !Simulated. Which will make the entire atmos system not run on a given grid.
+        /// </summary>
+        [DataField]
+        public bool Reinforced;
+
+        [DataField]
+        public bool SimulatedTurf = true;
+    }
+
+    [Flags]
+    public enum TileFlag : byte
+    {
+        None = 0,
+        Roof = 1 << 0,
     }
 }
