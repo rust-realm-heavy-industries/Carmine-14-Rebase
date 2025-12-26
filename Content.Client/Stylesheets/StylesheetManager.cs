@@ -1,79 +1,85 @@
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Content.Client.Stylesheets.Stylesheets;
+using Content.StyleSheetify.Client.StyleSheet;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
-using Robust.Shared.Reflection;
+using Robust.Shared.IoC;
+using Robust.Shared.Prototypes;
+
 
 namespace Content.Client.Stylesheets
 {
     public sealed class StylesheetManager : IStylesheetManager
     {
-        [Dependency] private readonly ILogManager _logManager = default!;
         [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
-        [Dependency] private readonly IReflectionManager _reflection = default!;
+        [Dependency] private readonly IResourceCache _resourceCache = default!;
+        [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+        [Dependency] private readonly IContentStyleSheetManager _contentStyleSheetManager = default!;
 
-        [Dependency]
-        private readonly IResourceCache
-            _resCache = default!; // TODO: REMOVE (obsolete; used to construct StyleNano/StyleSpace)
+        private ISawmill _sawmill = default!;
 
-        public Stylesheet SheetNanotrasen { get; private set; } = default!;
-        public Stylesheet SheetSystem { get; private set; } = default!;
-
-        [Obsolete("Update to use SheetNanotrasen instead")]
         public Stylesheet SheetNano { get; private set; } = default!;
-
-        [Obsolete("Update to use SheetSystem instead")]
         public Stylesheet SheetSpace { get; private set; } = default!;
 
-        private Dictionary<string, Stylesheet> Stylesheets { get; set; } = default!;
-
-        public bool TryGetStylesheet(string name, [MaybeNullWhen(false)] out Stylesheet stylesheet)
-        {
-            return Stylesheets.TryGetValue(name, out stylesheet);
-        }
-
-        public HashSet<Type> UnusedSheetlets { get; private set; } = [];
-
+        // WWDP EDIT START
         public void Initialize()
         {
-            var sawmill = _logManager.GetSawmill("style");
-            sawmill.Debug("Initializing Stylesheets...");
-            var sw = Stopwatch.StartNew();
+            _sawmill = Logger.GetSawmill("StylesheetManager");
+            LoadStyles();
+            _prototypeManager.PrototypesReloaded += OnPrototypesReloaded;
+        }
 
-            // add all sheetlets to the hashset
-            var tys = _reflection.FindTypesWithAttribute<CommonSheetletAttribute>();
-            UnusedSheetlets = [..tys];
+        private void LoadStyles()
+        {
+            SheetNano = TryMerge(new StyleNano(_resourceCache).Stylesheet, "nano");
+            SheetSpace = TryMerge(new StyleSpace(_resourceCache).Stylesheet, "space");
 
-            Stylesheets = new Dictionary<string, Stylesheet>();
-            SheetNanotrasen = Init(new NanotrasenStylesheet(new BaseStylesheet.NoConfig(), this));
-            SheetSystem = Init(new SystemStylesheet(new BaseStylesheet.NoConfig(), this));
-            SheetNano = new StyleNano(_resCache).Stylesheet; // TODO: REMOVE (obsolete)
-            SheetSpace = new StyleSpace(_resCache).Stylesheet; // TODO: REMOVE (obsolete)
+            _userInterfaceManager.Stylesheet = SheetNano;
+        }
 
-            _userInterfaceManager.Stylesheet = SheetNanotrasen;
+        private void OnPrototypesReloaded(PrototypesReloadedEventArgs obj)
+        {
+            Logger.Debug("Reloading styles...");
+            LoadStyles();
+        }
 
-            // warn about unused sheetlets
-            if (UnusedSheetlets.Count > 0)
+        private Stylesheet TryMerge(Stylesheet stylesheet, string prefix)
+        {
+            if (!_prototypeManager.TryIndex<StyleSheetPrototype>(prefix, out var proto))
+                return stylesheet;
+
+            var rules = stylesheet.Rules.ToDictionary(r => r.Selector, r => r);
+            var newRules = _contentStyleSheetManager.GetStyleRules(proto).ToDictionary(r => r.Selector, r => r);
+
+            var mergedPropsCount = 0;
+            var mergedStylesCount = 0;
+            var addedStylesCount = 0;
+
+            foreach (var (key,value) in newRules)
             {
-                var sheetlets = UnusedSheetlets.AsEnumerable()
-                    .Take(5)
-                    .Select(t => t.FullName ?? "<could not get FullName>")
-                    .ToArray();
-                sawmill.Error($"There are unloaded sheetlets: {string.Join(", ", sheetlets)}");
+                if (rules.TryGetValue(key, out var oriValue))
+                {
+                    var oriProps = oriValue.Properties.ToDictionary(a => a.Name);
+                    foreach (var props in value.Properties)
+                    {
+                        oriProps[props.Name] = props;
+                        mergedPropsCount++;
+                    }
+
+                    rules[key] = new(key, oriProps.Values.ToList());
+                    mergedStylesCount++;
+                }
+                else
+                {
+                    rules[key] = value;
+                    addedStylesCount++;
+                }
             }
 
-            sawmill.Debug($"Initialized {_styleRuleCount} style rules in {sw.Elapsed}");
+            _sawmill.Debug($"Successfully merged style {prefix}: {mergedPropsCount} props merged and {mergedStylesCount} styles merged and {addedStylesCount} styles added!");
+
+            return new(rules.Values.ToList());
         }
 
-        private int _styleRuleCount;
-
-        private Stylesheet Init(BaseStylesheet baseSheet)
-        {
-            Stylesheets.Add(baseSheet.StylesheetName, baseSheet.Stylesheet);
-            _styleRuleCount += baseSheet.Stylesheet.Rules.Count;
-            return baseSheet.Stylesheet;
-        }
+        // WWDP EDIT END
     }
 }
