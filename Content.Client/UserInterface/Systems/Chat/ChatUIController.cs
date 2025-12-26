@@ -44,7 +44,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Client.UserInterface.Systems.Chat;
 
-public sealed class ChatUIController : UIController
+public sealed partial class ChatUIController : UIController
 {
     [Dependency] private readonly IClientAdminManager _admin = default!;
     [Dependency] private readonly IChatManager _manager = default!;
@@ -63,7 +63,7 @@ public sealed class ChatUIController : UIController
     [UISystemDependency] private readonly GhostSystem? _ghost = default;
     [UISystemDependency] private readonly TypingIndicatorSystem? _typingIndicator = default;
     [UISystemDependency] private readonly ChatSystem? _chatSys = default;
-    [UISystemDependency] private readonly PsionicChatUpdateSystem? _psionic = default!; //Nyano - Summary: makes the psionic chat available.
+    // [UISystemDependency] private readonly PsionicChatUpdateSystem? _psionic = default!; //Nyano - Summary: makes the psionic chat available.
     [UISystemDependency] private readonly TransformSystem? _transform = default;
     [UISystemDependency] private readonly MindSystem? _mindSystem = default!;
     [UISystemDependency] private readonly RoleCodewordSystem? _roleCodewordSystem = default!;
@@ -87,7 +87,7 @@ public sealed class ChatUIController : UIController
         {SharedChatSystem.AdminPrefix, ChatSelectChannel.Admin},
         {SharedChatSystem.RadioCommonPrefix, ChatSelectChannel.Radio},
         {SharedChatSystem.DeadPrefix, ChatSelectChannel.Dead},
-        {SharedChatSystem.TelepathicPrefix, ChatSelectChannel.Telepathic} //Nyano - Summary: adds the telepathic prefix =.
+        //{SharedChatSystem.TelepathicPrefix, ChatSelectChannel.Telepathic} //Nyano - Summary: adds the telepathic prefix =.
     };
 
     public static readonly Dictionary<ChatSelectChannel, char> ChannelPrefixes = new()
@@ -101,7 +101,7 @@ public sealed class ChatUIController : UIController
         {ChatSelectChannel.Admin, SharedChatSystem.AdminPrefix},
         {ChatSelectChannel.Radio, SharedChatSystem.RadioCommonPrefix},
         {ChatSelectChannel.Dead, SharedChatSystem.DeadPrefix},
-        {ChatSelectChannel.Telepathic, SharedChatSystem.TelepathicPrefix } //Nyano - Summary: associates telepathic with =.
+        //{ChatSelectChannel.Telepathic, SharedChatSystem.TelepathicPrefix } //Nyano - Summary: associates telepathic with =.
     };
 
     /// <summary>
@@ -182,7 +182,7 @@ public sealed class ChatUIController : UIController
         _sawmill = Logger.GetSawmill("chat");
         _sawmill.Level = LogLevel.Info;
         _admin.AdminStatusUpdated += UpdateChannelPermissions;
-        _manager.PermissionsUpdated += UpdateChannelPermissions; //Nyano - Summary: the event for when permissions are updated for psionics.
+        //_manager.PermissionsUpdated += UpdateChannelPermissions; //Nyano - Summary: the event for when permissions are updated for psionics.
         _player.LocalPlayerAttached += OnAttachedChanged;
         _player.LocalPlayerDetached += OnAttachedChanged;
         _state.OnStateChanged += StateChanged;
@@ -295,9 +295,9 @@ public sealed class ChatUIController : UIController
                 chatSizeRaw = _config.GetCVar(CCVars.SeparatedScreenChatSize);
                 SetChatSizing(chatSizeRaw, separatedScreen, setting);
                 break;
-            case OverlayChatGameScreen overlayScreen:
+            case DefaultGameScreen overlayScreen:
                 chatBox = overlayScreen.ChatBox;
-                chatSizeRaw = _config.GetCVar(CCVars.OverlayScreenChatSize);
+                chatSizeRaw = _config.GetCVar(CCVars.DefaultScreenChatSize);
                 SetChatSizing(chatSizeRaw, overlayScreen, setting);
                 break;
             default:
@@ -351,8 +351,8 @@ public sealed class ChatUIController : UIController
             case SeparatedChatGameScreen _:
                 _config.SetCVar(CCVars.SeparatedScreenChatSize, stringSize);
                 break;
-            case OverlayChatGameScreen _:
-                _config.SetCVar(CCVars.OverlayScreenChatSize, stringSize);
+            case DefaultGameScreen _:
+                _config.SetCVar(CCVars.DefaultScreenChatSize, stringSize);
                 break;
             default:
                 // do nothing
@@ -550,15 +550,15 @@ public sealed class ChatUIController : UIController
             FilterableChannels |= ChatChannel.AdminAlert;
             FilterableChannels |= ChatChannel.AdminChat;
             CanSendChannels |= ChatSelectChannel.Admin;
-            FilterableChannels |= ChatChannel.Telepathic; //Nyano - Summary: makes admins able to see psionic chat.
+            //FilterableChannels |= ChatChannel.Telepathic; //Nyano - Summary: makes admins able to see psionic chat.
         }
 
         // Nyano - Summary: - Begin modified code block to add telepathic as a channel for a psionic user.
-        if (_psionic != null && _psionic.IsPsionic)
-        {
-            FilterableChannels |= ChatChannel.Telepathic;
-            CanSendChannels |= ChatSelectChannel.Telepathic;
-        }
+        // if (_psionic != null && _psionic.IsPsionic)
+        // {
+        //     FilterableChannels |= ChatChannel.Telepathic;
+        //     CanSendChannels |= ChatSelectChannel.Telepathic;
+        // }
         // /Nyano - End modified code block
 
         SelectableChannels = CanSendChannels;
@@ -687,7 +687,7 @@ public sealed class ChatUIController : UIController
         radioChannel = null;
         return _player.LocalEntity is EntityUid { Valid: true } uid
            && _chatSys != null
-           && _chatSys.TryProccessRadioMessage(uid, text, out _, out radioChannel, quiet: true);
+           && _chatSys.TryProcessRadioMessage(uid, text, out _, out radioChannel, quiet: true);
     }
 
     public void UpdateSelectedChannel(ChatBox box)
