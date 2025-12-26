@@ -1,0 +1,42 @@
+---
+- type: decal
+  parent: Misc
+  id: Dirt
+  sprite:
+    sprite: Decals/dirty.rsi
+    state: dirt
+
+- type: decal
+  parent: Misc
+  id: DirtLight
+  sprite:
+    sprite: Decals/dirty.rsi
+    state: dirtlight
+
+- type: decal
+  parent: Misc
+  id: DirtMedium
+  sprite:
+    sprite: Decals/dirty.rsi
+    state: dirtmedium
+
+- type: decal
+  parent: Misc
+  id: DirtHeavy
+  sprite:
+    sprite: Decals/dirty.rsi
+    state: dirtheavy
+
+- type: decal
+  parent: Misc
+  id: DirtHeavyMonotile
+  sprite:
+    sprite: Decals/dirty.rsi
+    state: dirtheavy-mono
+
+- type: decal
+  parent: Misc
+  id: Remains
+  sprite:
+    sprite: Decals/dirty.rsi
+    state: remains

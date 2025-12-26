@@ -1,0 +1,42 @@
+---
+# Base benches
+- type: entity
+  parent: SeatBase
+  id: BenchBaseMiddle
+  name: bench
+  suffix: Middle
+  abstract: true
+  description: Sturdy, stiff. The seats are cold to the touch.
+  components:
+  - type: Physics
+    bodyType: Static
+  - type: Transform
+    anchored: true
+  - type: Rotatable
+  - type: Sprite
+    state: middle
+
+# Steel benches
+- type: entity
+  parent: BenchBaseMiddle
+  id: BenchSteelMiddle
+  name: steel bench
+  components:
+  - type: Sprite
+    sprite: SimpleStation14/Structures/Furniture/Benches/steel_bench.rsi
+
+- type: entity
+  parent: BenchSteelMiddle
+  id: BenchSteelLeft
+  suffix: Left
+  components:
+  - type: Sprite
+    state: left
+
+- type: entity
+  parent: BenchSteelMiddle
+  id: BenchSteelRight
+  suffix: Right
+  components:
+  - type: Sprite
+    state: right

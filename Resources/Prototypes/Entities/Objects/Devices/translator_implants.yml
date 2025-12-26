@@ -1,0 +1,13 @@
+---
+- type: entity
+  parent: BaseSubdermalImplant
+  id: TauCetiBasicTranslatorImplant
+  name: advanced common translator implant
+  description: A more advanced version of the translator implant, teaches your illiterate friends the ability to both speak and understand the galactic tongue!
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TranslatorImplant
+    understood:
+    - TauCetiBasic
+    spoken:
+    - TauCetiBasic

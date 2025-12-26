@@ -1,0 +1,46 @@
+---
+- type: marking
+  id: HumanoidEyebags
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _Impstation/Mobs/Customization/markingsbundle2.rsi
+    state: eyebags
+
+- type: marking
+  id: HumanoidAbs
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Human]
+  followSkinColor: true
+  sprites:
+  - sprite: _Impstation/Mobs/Customization/markingsbundle2.rsi
+    state: muscular
+
+- type: marking
+  id: EyebrowsBig
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _Impstation/Mobs/Customization/markingsbundle2.rsi
+    state: eyebrowsthick
+
+- type: marking
+  id: EyebrowsBigger
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _Impstation/Mobs/Customization/markingsbundle2.rsi
+    state: eyebrowsultra
+
+- type: marking
+  id: EyebrowsUnibrow
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _Impstation/Mobs/Customization/markingsbundle2.rsi
+    state: eyebrowsunibrow

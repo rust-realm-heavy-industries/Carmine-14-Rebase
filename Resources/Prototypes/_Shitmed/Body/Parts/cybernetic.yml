@@ -1,0 +1,120 @@
+---
+- type: entity
+  parent: [PartIPC, BaseLeftArm]
+  id: LeftArmCybernetic
+  abstract: true
+  components:
+  - type: Damageable
+    damageContainer: Silicon
+  - type: BodyPart
+    baseLayerId: MobCyberneticBishopLArm
+  - type: GenerateChildPart
+    id: LeftHandCybernetic
+  - type: Cybernetics
+  - type: Sprite
+    sprite: Mobs/Customization/cyberlimbs/bishop/bishop_main.rsi
+    state: "l_arm-combined"
+
+- type: entity
+  parent: [PartIPC, BaseRightArm]
+  id: RightArmCybernetic
+  abstract: true
+  components:
+  - type: Damageable
+    damageContainer: Silicon
+  - type: BodyPart
+    baseLayerId: MobCyberneticBishopRArm
+  - type: GenerateChildPart
+    id: RightHandCybernetic
+  - type: Cybernetics
+  - type: Sprite
+    sprite: Mobs/Customization/cyberlimbs/bishop/bishop_main.rsi
+    state: "r_arm-combined"
+
+- type: entity
+  parent: [PartIPC, BaseLeftLeg]
+  id: LeftLegCybernetic
+  abstract: true
+  components:
+  - type: Damageable
+    damageContainer: Silicon
+  - type: BodyPart
+    baseLayerId: MobCyberneticBishopLLeg
+  - type: GenerateChildPart
+    id: LeftFootCybernetic
+  - type: Cybernetics
+  - type: Sprite
+    sprite: Mobs/Customization/cyberlimbs/bishop/bishop_main.rsi
+    state: "l_leg-combined"
+
+- type: entity
+  parent: [PartIPC, BaseRightLeg]
+  id: RightLegCybernetic
+  abstract: true
+  components:
+  - type: Damageable
+    damageContainer: Silicon
+  - type: BodyPart
+    baseLayerId: MobCyberneticBishopRLeg
+  - type: GenerateChildPart
+    id: RightFootCybernetic
+  - type: Cybernetics
+  - type: Sprite
+    sprite: Mobs/Customization/cyberlimbs/bishop/bishop_main.rsi
+    state: "r_leg-combined"
+
+- type: entity
+  parent: [PartIPC, BaseLeftHand]
+  id: LeftHandCybernetic
+  name: cybernetic left hand
+  components:
+  - type: Damageable
+    damageContainer: Silicon
+  - type: BodyPart
+    baseLayerId: MobCyberneticBishopLHand
+  - type: Cybernetics
+  - type: Sprite
+    sprite: Mobs/Customization/cyberlimbs/bishop/bishop_main.rsi
+    state: "l_hand"
+
+- type: entity
+  parent: [PartIPC, BaseRightHand]
+  id: RightHandCybernetic
+  name: cybernetic right hand
+  components:
+  - type: Damageable
+    damageContainer: Silicon
+  - type: BodyPart
+    baseLayerId: MobCyberneticBishopRHand
+  - type: Cybernetics
+  - type: Sprite
+    sprite: Mobs/Customization/cyberlimbs/bishop/bishop_main.rsi
+    state: "r_hand"
+
+- type: entity
+  parent: [PartIPC, BaseLeftFoot]
+  id: LeftFootCybernetic
+  name: cybernetic left foot
+  components:
+  - type: Damageable
+    damageContainer: Silicon
+  - type: BodyPart
+    baseLayerId: MobCyberneticBishopLFoot
+  - type: Cybernetics
+  - type: Sprite
+    sprite: Mobs/Customization/cyberlimbs/bishop/bishop_main.rsi
+    state: "l_foot"
+
+- type: entity
+  parent: [PartIPC, BaseRightFoot]
+  id: RightFootCybernetic
+  name: cybernetic right foot
+  components:
+  - type: Damageable
+    damageContainer: Silicon
+  - type: BodyPart
+    baseLayerId: MobCyberneticBishopRFoot
+  - type: Cybernetics
+  - type: Sprite
+    sprite: Mobs/Customization/cyberlimbs/bishop/bishop_main.rsi
+    state: "r_foot"

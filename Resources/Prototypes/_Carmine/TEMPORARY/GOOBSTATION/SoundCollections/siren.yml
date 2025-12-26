@@ -1,0 +1,5 @@
+---
+- type: soundCollection
+  id: PoliceSiren
+  files:
+    - /Audio/Effects/Vehicle/policesiren.ogg
