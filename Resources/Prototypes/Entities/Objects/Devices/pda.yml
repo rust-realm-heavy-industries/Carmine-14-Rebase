@@ -1,6 +1,6 @@
 - type: entity
   abstract: true
-  parent: [ BaseItem, StorePresetUplink ] #PDA's have uplinks so they have to inherit the data.
+  parent: [ BaseItem ] #PDA's have uplinks so they have to inherit the data.
   id: BasePDA
   name: PDA
   description: Personal Data Assistant.
@@ -1071,7 +1071,7 @@
     - DoorBumpOpener
 
 - type: entity
-  parent: [ BasePDA, BaseSyndicateContraband ]
+  parent: [ BasePDA ]
   id: SyndiPDA
   name: syndicate PDA
   description: Ok, time to be a productive member of- oh cool I'm a bad guy time to kill people!
@@ -1094,7 +1094,7 @@
       - NanoTaskCartridge
 
 - type: entity
-  parent: [ SyndiPDA, BaseSyndicateContraband ]
+  parent: [ SyndiPDA ]
   id: SyndiOperativePDA
   name: syndicate operative PDA
   description: Death to NT!
@@ -1110,7 +1110,7 @@
     state: pda-syndi-operative
 
 - type: entity
-  parent: [ SyndiOperativePDA, BaseSyndicateContraband ]
+  parent: [ SyndiOperativePDA ]
   id: SyndiCorpsmanPDA
   name: syndicate corpsman PDA
   description: Commander... I need to cook!
@@ -1132,7 +1132,7 @@
       - MedTekCartridge
 
 - type: entity
-  parent: [ SyndiOperativePDA, BaseSyndicateContraband ]
+  parent: [ SyndiOperativePDA ]
   id: SyndiCommanderPDA
   name: syndicate commander PDA
   description: So what are we, some kind of Nukie squad?
@@ -1501,7 +1501,7 @@
     state: pda-seniorcourier
 
 - type: entity
-  parent: [ BaseMajorContraband, SyndiPDA ]
+  parent: [  SyndiPDA ]
   id: PiratePDA
   name: pirate PDA
   description: Yargh!
@@ -1517,7 +1517,7 @@
     state: pda-pirate
 
 - type: entity
-  parent: [BasePDA, SelectableLock]
+  parent: [BasePDA]
   id: ChameleonPDA
   name: passenger PDA
   description: Why isn't it gray?

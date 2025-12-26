@@ -1,0 +1,76 @@
+---
+- type: entity
+  parent: TableBase
+  id: Workbench
+  name: workbench
+  description: A basic workbench.
+  components:
+  - type: Sprite
+    offset: 0.5, 0
+    noRot: true
+    sprite: _Crescent/Structures/Decoration/workbench.rsi
+    layers:
+      - state: workbench
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 100
+        behaviors:
+        - !type:DoActsBehavior
+          acts: [ "Destruction" ]
+
+- type: entity
+  parent: Workbench
+  id: WorkbenchAlchemy
+  name: alchemical set
+  description: A basic set for experimentation, or drug cooking.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Decoration/alchemy_set.rsi
+    layers:
+      - state: alchemy_set
+
+- type: entity
+  parent: Workbench
+  id: WorkbenchHeavy
+  name: heavy workbench
+  description: A workbench tailor-made for manual industrial labor.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Decoration/heavy_workbench.rsi
+    layers:
+      - state: workbench
+
+- type: entity
+  parent: Workbench
+  id: WorkbenchTailoring
+  name: tailoring workbench
+  description: A workbench for weaving clothes and fabric manually.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Decoration/tailoring_workbench.rsi
+    layers:
+      - state: workbench
+
+- type: entity
+  parent: Workbench
+  id: WorkbenchTools
+  name: tools workbench
+  description: A workbench with various tools sprawled around.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Decoration/tools_workbench.rsi
+    layers:
+      - state: workbench
+
+- type: entity
+  parent: Workbench
+  id: WorkbenchSamples
+  name: samples workbench
+  description: A workbench with samples of peculiar materials neatly organized.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/Decoration/samples_workbench.rsi
+    layers:
+      - state: workbench

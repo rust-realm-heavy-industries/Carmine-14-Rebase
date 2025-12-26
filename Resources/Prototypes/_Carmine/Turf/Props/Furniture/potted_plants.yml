@@ -1,0 +1,131 @@
+---
+- type: entity
+  parent: BaseStructureDynamic
+  id: PottedPlantBase
+  name: potted plant
+  abstract: true
+  description: A little bit of nature contained in a pot.
+  components:
+  - type: Transform
+    noRot: true
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Dynamic
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.1
+        density: 190
+        mask:
+        - HighImpassable
+  - type: Sprite
+    drawdepth: Overdoors
+    offset: "0.0,0.3"
+    sprite: Structures/Furniture/potted_plants.rsi
+    noRot: true
+  - type: PottedPlantHide
+  - type: SecretStash
+    secretPartName: secret-stash-part-plant
+  - type: ContainerContainer
+    containers:
+      stash: !type:ContainerSlot {}
+  - type: Pullable
+  - type: Damageable
+    damageContainer: Inorganic # The pot. Not the plant. Or is it plastic?
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 50
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          path: /Audio/Effects/plant_rustle.ogg
+
+- type: entity
+  parent: PottedPlantBase
+  id: PottedPlant0
+  components:
+  - type: Sprite
+    state: applebush #whoever named this texture in the rsi sucks
+
+- type: entity
+  parent: PottedPlantBase
+  id: PottedPlant1
+  components:
+  - type: Sprite
+    state: plant-01
+
+- type: entity
+  parent: PottedPlantBase
+  id: PottedPlant2
+  components:
+  - type: Sprite
+    state: plant-02
+
+- type: entity
+  parent: PottedPlantBase
+  id: PottedPlant4
+  components:
+  - type: Sprite
+    state: plant-04
+
+- type: entity
+  parent: PottedPlantBase
+  id: PottedPlant5
+  components:
+  - type: Sprite
+    state: plant-05
+
+- type: entity
+  parent: PottedPlantBase
+  id: PottedPlant6
+  components:
+  - type: Sprite
+    state: plant-06
+
+- type: entity
+  parent: PottedPlantBase
+  id: PottedPlant8
+  components:
+  - type: Sprite
+    state: plant-08
+
+- type: entity
+  parent: PottedPlantBase
+  id: PottedPlant12
+  components:
+  - type: Sprite
+    state: plant-12
+
+- type: entity
+  parent: PottedPlantBase
+  id: PottedPlant17
+  components:
+  - type: Sprite
+    state: plant-17
+
+- type: entity
+  parent: PottedPlantBase
+  id: PottedPlant18
+  components:
+  - type: Sprite
+    state: plant-18
+
+- type: entity
+  parent: PottedPlantBase
+  id: PottedPlant21
+  components:
+  - type: Sprite
+    state: plant-21
+
+- type: entity
+  parent: PottedPlantBase
+  id: PottedPlant22
+  components:
+  - type: Sprite
+    state: plant-22

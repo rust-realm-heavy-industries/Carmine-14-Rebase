@@ -1,0 +1,27 @@
+---
+- type: entity
+  parent: BaseItem
+  id: AccessElevatorBase
+  categories: [ HideSpawnMenu ]
+  name: Debug Acces Elevator
+  description: Gives you jack shit dumbass you shouldn't spawn this!!!!!!!!!!!.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/appraisal-tool.rsi
+    state: icon
+  - type: Item
+    sprite: Objects/Tools/appraisal-tool.rsi
+  - type: UseDelay
+    delay: 3
+  - type: Clothing
+    sprite: Objects/Tools/appraisal-tool.rsi
+    quickEquip: false
+    slots:
+    - Belt
+  - type: PhysicalComposition
+    materialComposition:
+      Steel: 250
+  - type: Speech
+  - type: AccesElevator
+    acces:
+    - Command

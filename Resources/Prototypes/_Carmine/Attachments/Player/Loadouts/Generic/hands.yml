@@ -1,0 +1,11 @@
+# ---
+# - type: loadout
+#   id: CarmineBaseLoadoutHandsGlovesLeather
+#   category: Hands
+#   cost: 0
+#   exclusive: true
+#   items:
+#     - ClothingHandsGlovesLeather
+#   requirements:
+#     - !type:CharacterItemGroupRequirement
+#       group: LoadoutGloves

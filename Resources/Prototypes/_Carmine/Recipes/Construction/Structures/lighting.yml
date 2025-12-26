@@ -1,0 +1,33 @@
+---
+#lighting
+- type: construction
+  id: LightTubeFixtureEmpty
+  name: light tube fixture
+  graph: LightFixture
+  startNode: start
+  targetNode: tubeLight
+  category: construction-category-structures
+  description: A small light fixture. Use light tubes.
+  icon:
+    sprite: Structures/Wallmounts/Lighting/light_tube.rsi
+    state: base
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: true
+
+- type: construction
+  id: SmallLightFixtureEmpty
+  name: small light fixture
+  graph: LightFixture
+  startNode: start
+  targetNode: bulbLight
+  category: construction-category-structures
+  description: A tube light fixture. Use light bulbs.
+  icon:
+    sprite: Structures/Wallmounts/lightbulbcaged.rsi
+    state: base
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: true

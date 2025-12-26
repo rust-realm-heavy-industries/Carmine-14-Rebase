@@ -118,7 +118,7 @@
 
 #Wall Closet
 - type: entity
-  parent: BaseWallmountMetallic
+
   id: BaseWallCloset
   abstract: true
   name: wall closet

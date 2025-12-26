@@ -1,0 +1,119 @@
+---
+- type: decal
+  parent: Misc
+  id: arrow
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: arrow
+
+- type: decal
+  parent: Misc
+  id: biohazard
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: biohazard
+
+- type: decal
+  parent: Misc
+  id: body
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: body
+
+- type: decal
+  parent: Misc
+  id: cyka
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: cyka
+
+- type: decal
+  parent: Misc
+  id: end
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: end
+
+- type: decal
+  parent: Misc
+  id: food
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: food
+
+- type: decal
+  parent: Misc
+  id: footprint
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: footprint
+
+- type: decal
+  parent: Misc
+  id: med
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: med
+
+- type: decal
+  parent: Misc
+  id: questionmark
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: questionmark
+
+- type: decal
+  parent: Misc
+  id: radiation
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: radiation
+
+- type: decal
+  parent: Misc
+  id: safe
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: safe
+
+- type: decal
+  parent: Misc
+  id: shop
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: shop
+
+- type: decal
+  parent: Misc
+  id: skull
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: skull
+
+- type: decal
+  parent: Misc
+  id: space
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: space
+
+- type: decal
+  parent: Misc
+  id: splatter
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: splatter
+
+- type: decal
+  parent: Misc
+  id: toolbox
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: toolbox
+
+- type: decal
+  parent: Misc
+  id: trade
+  sprite:
+    sprite: Effects/crayondecals.rsi
+    state: trade

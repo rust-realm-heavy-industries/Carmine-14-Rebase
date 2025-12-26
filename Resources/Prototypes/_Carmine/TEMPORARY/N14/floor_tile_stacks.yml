@@ -1,0 +1,44 @@
+---
+# Other
+
+- type: stack
+  id: FloorTileWoodOak
+  name: wood floor
+  spawn: FloorTileItemWoodOak
+
+- type: stack
+  id: FloorTileWoodHouse
+  name: wood floor
+  spawn: FloorTileItemWoodHouse
+
+- type: stack
+  id: FloorTileWoodMaple
+  name: wood floor
+  spawn: FloorTileItemWoodMaple
+
+- type: stack
+  id: FloorTileCarpetRed
+  name: carpet floor
+  spawn: FloorTileItemCarpetRed
+
+
+# MS13
+- type: stack
+  id: FloorTileMetalIndustrial
+  name: industrial floor
+  spawn: FloorTileItemMetalIndustrial
+
+- type: stack
+  id: FloorTileMetalMS13
+  name: metal tile floor
+  spawn: FloorTileItemMetalMS13
+
+- type: stack
+  id: FloorTileMetalGrate
+  name: metal grate floor
+  spawn: FloorTileItemMetalGrate
+
+- type: stack
+  id: FloorTileMetalSolid
+  name: metal solid floor
+  spawn: FloorTileItemMetalSolid

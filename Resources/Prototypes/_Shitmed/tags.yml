@@ -1,0 +1,6 @@
+---
+- type: Tag
+  id: CantInteract
+
+- type: Tag
+  id: ShowWires

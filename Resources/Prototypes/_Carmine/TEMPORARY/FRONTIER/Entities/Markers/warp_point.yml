@@ -1,0 +1,8 @@
+---
+- type: entity
+  parent: WarpPoint
+  id: WarpPointShip
+  suffix: ship
+  components:
+    - type: WarpPoint
+      useStationName: true

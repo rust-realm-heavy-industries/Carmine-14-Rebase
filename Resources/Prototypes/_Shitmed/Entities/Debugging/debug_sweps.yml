@@ -1,0 +1,83 @@
+---
+- type: entity
+  parent: BaseItem
+  id: MeleeDebugSever
+  name: bang severer
+  suffix: DEBUG
+  description: sever yer parts a week from now
+  components:
+  - type: Tag
+    tags:
+      - Debug
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/debug.rsi
+    state: icon
+  - type: MeleeWeapon
+    damage:
+      types:
+        Slash: 20000
+    clickPartDamageMultiplier: 10
+  - type: Item
+    size: Tiny
+    sprite: Objects/Weapons/Melee/debug.rsi
+
+- type: entity
+  parent: MeleeDebugSever
+  id: MeleeDebugSever100
+  name: bang severer 100dmg
+  components:
+  - type: Tag
+    tags:
+      - Debug
+  - type: MeleeWeapon
+    damage:
+      types:
+        Slash: 100
+
+- type: entity
+  parent: MeleeDebugSever
+  id: MeleeDebugSever200
+  name: bang severer 200dmg
+  components:
+  - type: Tag
+    tags:
+      - Debug
+  - type: MeleeWeapon
+    damage:
+      types:
+        Slash: 200
+
+- type: entity
+  parent: BaseItem
+  id: MeleeDebugBurner
+  name: bang burner
+  suffix: DEBUG
+  description: burn yer parts
+  components:
+  - type: Tag
+    tags:
+      - Debug
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/debug.rsi
+    state: icon
+  - type: MeleeWeapon
+    damage:
+      types:
+        Heat: 20000
+    clickPartDamageMultiplier: 10
+  - type: Item
+    size: Tiny
+    sprite: Objects/Weapons/Melee/debug.rsi
+
+- type: entity
+  parent: MeleeDebugBurner
+  id: MeleeDebugBurner200
+  name: bang burner 200dmg
+  components:
+  - type: Tag
+    tags:
+      - Debug
+  - type: MeleeWeapon
+    damage:
+      types:
+        Heat: 200

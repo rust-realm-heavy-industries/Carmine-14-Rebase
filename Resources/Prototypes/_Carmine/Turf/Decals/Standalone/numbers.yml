@@ -1,0 +1,70 @@
+---
+- type: decal
+  parent: Misc
+  id: 0
+  sprite:
+    sprite: _Crescent/Decals/trimline.rsi
+    state: 0
+
+- type: decal
+  parent: Misc
+  id: 1
+  sprite:
+    sprite: _Crescent/Decals/trimline.rsi
+    state: 1
+
+- type: decal
+  parent: Misc
+  id: 2
+  sprite:
+    sprite: _Crescent/Decals/trimline.rsi
+    state: 2
+
+- type: decal
+  parent: Misc
+  id: 3
+  sprite:
+    sprite: _Crescent/Decals/trimline.rsi
+    state: 3
+
+- type: decal
+  parent: Misc
+  id: 4
+  sprite:
+    sprite: _Crescent/Decals/trimline.rsi
+    state: 4
+
+- type: decal
+  parent: Misc
+  id: 5
+  sprite:
+    sprite: _Crescent/Decals/trimline.rsi
+    state: 5
+
+- type: decal
+  parent: Misc
+  id: 6
+  sprite:
+    sprite: _Crescent/Decals/trimline.rsi
+    state: 6
+
+- type: decal
+  parent: Misc
+  id: 7
+  sprite:
+    sprite: _Crescent/Decals/trimline.rsi
+    state: 7
+
+- type: decal
+  parent: Misc
+  id: 8
+  sprite:
+    sprite: _Crescent/Decals/trimline.rsi
+    state: 8
+
+- type: decal
+  parent: Misc
+  id: 9
+  sprite:
+    sprite: _Crescent/Decals/trimline.rsi
+    state: 9

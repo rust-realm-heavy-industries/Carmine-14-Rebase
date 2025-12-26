@@ -109,7 +109,6 @@
 
 - type: entity
   id: VendingMachineWallmount
-  parent: BaseWallmountMachine
   name: vending machine
   abstract: true
   components:
